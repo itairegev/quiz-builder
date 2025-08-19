@@ -1,0 +1,13 @@
+---
+description: protect from deleting the database content on migrations
+globs: 
+alwaysApply: false
+---
+ # Database Protection Rules
+
+## Core Principles
+- Make sure to alert BEFORE a migration will cause a data loss, allow the user to decide whetever he approves or not
+- before a migration drops or deletes a table, backup the meta data and the database contents 
+- If a column or index is about to be updated / deleted , alert the user as well
+- Make sure no delettion or loss of data happens without user approval.
+- the backups should be named in the format of [tablename[_[date]_[time].sql

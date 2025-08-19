@@ -1,0 +1,13 @@
+---
+description: When applying changes make sure to update the README.md file
+globs: 
+alwaysApply: false
+---
+## README update
+- When you finish applying changes, make sure to update the README.md for updated documentation
+
+## RAEDME.md
+- update with major changes which whoever gets this project understand what it does, how it builds and prerequisites.
+- include everything needed to get the project compiled.
+- include main screens and interfaces
+- include configurations and settings

@@ -1,0 +1,12 @@
+---
+description: apply whenever code changes are applied
+globs: 
+alwaysApply: false
+---
+#change-log
+- whenever you apply code changes, structure changes make sure to log them in the ChaneLog.md file, make sure the time and date are correct, each new change should be added to the top of the file.
+
+#structure of change-log block
+"Title : Short description of the change in a few words"
+"Date : 2025-08-1 17:48"
+"Description : added a new component for posting a message to linkedin"
