@@ -1,0 +1,71 @@
+{
+  "name": "shopify-quiz-builder",
+  "version": "0.1.0",
+  "description": "An intuitive, no-code quiz builder for Shopify merchants",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:admin\" \"npm run dev:api\" \"npm run dev:storefront\"",
+    "dev:admin": "cd apps/admin && npm run dev",
+    "dev:api": "cd apps/api && npm run start:dev",
+    "dev:storefront": "cd apps/storefront && npm run dev",
+    "build": "npm run build:admin && npm run build:api && npm run build:storefront",
+    "build:admin": "cd apps/admin && npm run build",
+    "build:api": "cd apps/api && npm run build",
+    "build:storefront": "cd apps/storefront && npm run build",
+    "test": "npm run test:admin && npm run test:api && npm run test:storefront",
+    "test:admin": "cd apps/admin && npm run test",
+    "test:api": "cd apps/api && npm run test",
+    "test:storefront": "cd apps/storefront && npm run test",
+    "lint": "npm run lint:admin && npm run lint:api && npm run lint:storefront",
+    "lint:admin": "cd apps/admin && npm run lint",
+    "lint:api": "cd apps/api && npm run lint",
+    "lint:storefront": "cd apps/storefront && npm run lint",
+    "lint:fix": "npm run lint:fix:admin && npm run lint:fix:api && npm run lint:fix:storefront",
+    "lint:fix:admin": "cd apps/admin && npm run lint:fix",
+    "lint:fix:api": "cd apps/api && npm run lint:fix",
+    "lint:fix:storefront": "cd apps/storefront && npm run lint:fix",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "docker:restart": "docker-compose restart",
+    "docker:clean": "docker-compose down -v --remove-orphans",
+    "db:migrate": "cd apps/api && npm run prisma:migrate",
+    "db:seed": "cd apps/api && npm run prisma:seed",
+    "db:studio": "cd apps/api && npm run prisma:studio",
+    "setup": "npm install && npm run docker:up && npm run db:migrate && npm run db:seed",
+    "install:workspaces": "npm install --workspaces",
+    "clean": "npm run docker:clean && rm -rf node_modules apps/*/node_modules packages/*/node_modules"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "concurrently": "^8.2.0",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "keywords": [
+    "shopify",
+    "quiz",
+    "builder",
+    "ecommerce",
+    "personalization",
+    "conversion",
+    "marketing"
+  ],
+  "author": "Shopify Quiz Builder Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/itairegev/shopify-quiz-builder.git"
+  },
+  "bugs": {
+    "url": "https://github.com/itairegev/shopify-quiz-builder/issues"
+  },
+  "homepage": "https://github.com/itairegev/shopify-quiz-builder#readme"
+}
