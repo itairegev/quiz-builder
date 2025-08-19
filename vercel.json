@@ -1,0 +1,75 @@
+{
+  "version": 2,
+  "name": "shopify-quiz-builder-admin",
+  "builds": [
+    {
+      "src": "apps/admin/package.json",
+      "use": "@vercel/next"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/admin/(.*)",
+      "dest": "/apps/admin/$1"
+    },
+    {
+      "src": "/api/(.*)",
+      "dest": "/apps/admin/api/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/apps/admin/$1"
+    }
+  ],
+  "env": {
+    "NEXT_PUBLIC_API_URL": "@shopify-quiz-builder-api-url",
+    "NEXT_PUBLIC_APP_URL": "@shopify-quiz-builder-app-url",
+    "SHOPIFY_API_KEY": "@shopify-api-key",
+    "SHOPIFY_API_SECRET": "@shopify-api-secret",
+    "JWT_SECRET": "@jwt-secret"
+  },
+  "functions": {
+    "apps/admin/api/**/*.ts": {
+      "maxDuration": 30
+    }
+  },
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        }
+      ]
+    },
+    {
+      "source": "/admin/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/admin",
+      "permanent": false
+    }
+  ]
+}
