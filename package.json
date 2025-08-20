@@ -54,12 +54,16 @@
     "bundle:analyze:storefront": "cd apps/storefront && npm run build && npm run analyze"
   },
   "devDependencies": {
-    "@types/node": "^20.0.0",
-    "concurrently": "^8.2.0",
-    "typescript": "^5.0.0",
     "@commitlint/cli": "^18.0.0",
     "@commitlint/config-conventional": "^18.0.0",
-    "husky": "^8.0.0"
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "concurrently": "^8.2.0",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^9.1.2",
+    "husky": "^8.0.0",
+    "typescript": "^5.0.0"
   },
   "engines": {
     "node": ">=18.0.0",

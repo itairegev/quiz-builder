@@ -12,6 +12,7 @@ datasource db {
 
 // Extensions
 model Extensions {
+  id String @id @default(cuid())
   @@map("_extensions")
 }
 
@@ -84,6 +85,7 @@ model Quiz {
   questions   Question[]
   logicRules  LogicRule[]
   submissions Submission[]
+  analyticsEvents AnalyticsEvent[]
 
   @@map("quizzes")
 }
@@ -142,6 +144,7 @@ model Submission {
   // Relations
   quiz        Quiz             @relation(fields: [quizId], references: [id], onDelete: Cascade)
   answers    Answer[]
+  analyticsEvents AnalyticsEvent[]
 
   @@map("submissions")
 }
@@ -179,6 +182,3 @@ model AnalyticsEvent {
 }
 
 // Indexes for performance
-model _prisma_migrations {
-  @@map("_prisma_migrations")
-}
