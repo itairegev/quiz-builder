@@ -41,7 +41,7 @@ This document tracks the progress of all tasks from the Shopify Quiz Builder pro
 ### Milestone 2.1: Database Design & Implementation
 | Task | Description | Status | Assigned To | Started | Completed | Notes |
 |------|-------------|--------|-------------|---------|-----------|-------|
-| 13 | Create database schema | 🔴 **Not Started** | - | - | - | Prisma schema needed |
+| 13 | Create database schema | 🟢 **Completed** | - | 2024-08-20 | 2024-08-20 | Comprehensive Prisma schema implemented with seed data |
 | 14 | Set up Prisma ORM | 🔴 **Not Started** | - | - | - | Depends on Task 7 |
 | 15 | Implement seed data | 🔴 **Not Started** | - | - | - | Depends on Task 14 |
 | 16 | Set up database backup procedures | 🔴 **Not Started** | - | - | - | Depends on Task 7 |
@@ -260,14 +260,14 @@ This document tracks the progress of all tasks from the Shopify Quiz Builder pro
 
 ### Overall Progress
 - **Total Tasks**: 126
-- **Completed**: 12 (9.5%)
+- **Completed**: 13 (10.3%)
 - **In Progress**: 0 (0%)
-- **Not Started**: 114 (90.5%)
+- **Not Started**: 113 (89.7%)
 - **Blocked**: 0 (0%)
 
 ### Phase Progress
 - **Phase 1**: 12/12 tasks completed (100%) 🟢
-- **Phase 2**: 0/15 tasks completed (0%) 🔴
+- **Phase 2**: 1/15 tasks completed (6.7%) 🟡
 - **Phase 3**: 0/25 tasks completed (0%) 🔴
 - **Phase 4**: 0/20 tasks completed (0%) 🔴
 - **Phase 5**: 0/20 tasks completed (0%) 🔴
@@ -281,10 +281,10 @@ This document tracks the progress of all tasks from the Shopify Quiz Builder pro
 All infrastructure and setup tasks are completed. Ready to begin core development.
 
 ### High Priority (Phase 2 - Core Backend Development)
-1. **Task 13**: Create database schema (Prisma schema already exists)
-2. **Task 14**: Set up Prisma ORM (ready to implement)
-3. **Task 15**: Implement seed data
-4. **Task 17**: Set up NestJS project structure
+1. **Task 14**: Set up Prisma ORM (ready to implement)
+2. **Task 15**: Implement seed data (ready to run)
+3. **Task 17**: Set up NestJS project structure
+4. **Task 18**: Implement authentication middleware
 
 ### Medium Priority
 1. **Task 16**: Set up database backup procedures

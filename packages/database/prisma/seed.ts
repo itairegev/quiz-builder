@@ -5,260 +5,312 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('🌱 Starting database seeding...');
 
-  // Clean existing data
-  console.log('🧹 Cleaning existing data...');
-  await prisma.answer.deleteMany();
-  await prisma.analyticsEvent.deleteMany();
-  await prisma.submission.deleteMany();
-  await prisma.logicRule.deleteMany();
-  await prisma.question.deleteMany();
-  await prisma.quiz.deleteMany();
-  await prisma.shop.deleteMany();
-
-  // Create sample shop
-  console.log('🏪 Creating sample shop...');
-  const shop = await prisma.shop.create({
-    data: {
-      shopifyDomain: 'sample-shop.myshopify.com',
-      accessToken: 'sample_access_token',
-      scope: 'read_products,write_products,read_customers,write_customers',
-      email: 'merchant@sample-shop.com',
-      name: 'Sample Shop',
+  // Create a sample shop
+  const shop = await prisma.shop.upsert({
+    where: { shopifyDomain: 'quizplayground.myshopify.com' },
+    update: {},
+    create: {
+      shopifyDomain: 'quizplayground.myshopify.com',
+      accessToken: 'sample_access_token_for_development',
+      scope: 'read_products,write_products,read_customers,write_customers,read_orders',
+      email: 'dev@quizplayground.com',
+      name: 'Quiz Playground Store',
       currency: 'USD',
-      timezone: 'America/New_York',
+      timezone: 'UTC',
     },
   });
 
-  // Create sample quiz
-  console.log('📝 Creating sample quiz...');
-  const quiz = await prisma.quiz.create({
-    data: {
+  console.log('✅ Shop created:', shop.shopifyDomain);
+
+  // Create a sample quiz
+  const quiz = await prisma.quiz.upsert({
+    where: { id: 'sample_quiz_1' },
+    update: {},
+    create: {
+      id: 'sample_quiz_1',
       shopId: shop.id,
-      title: 'Product Recommendation Quiz',
-      description: 'Find the perfect product for your needs',
+      title: 'Skin Care Quiz',
+      description: 'Find your perfect skin care routine with our personalized quiz',
       status: 'PUBLISHED',
       settings: {
+        theme: 'modern',
         showProgress: true,
-        allowBacktracking: true,
+        allowSkipping: false,
         timeLimit: null,
-        maxAttempts: 3,
+        maxAttempts: 1,
       },
       theme: {
-        primaryColor: '#007cba',
-        secondaryColor: '#f6f6f7',
-        fontFamily: 'Inter, sans-serif',
+        primaryColor: '#6366f1',
+        secondaryColor: '#f3f4f6',
+        fontFamily: 'Inter',
         borderRadius: '8px',
       },
       publishedAt: new Date(),
     },
   });
 
+  console.log('✅ Quiz created:', quiz.title);
+
   // Create sample questions
-  console.log('❓ Creating sample questions...');
   const questions = await Promise.all([
-    prisma.question.create({
-      data: {
+    prisma.question.upsert({
+      where: { id: 'question_1' },
+      update: {},
+      create: {
+        id: 'question_1',
         quizId: quiz.id,
         order: 1,
         type: 'SINGLE_CHOICE',
-        text: 'What type of product are you looking for?',
-        description: 'Choose the category that best fits your needs',
+        text: 'What is your skin type?',
+        description: 'Choose the option that best describes your skin',
         required: true,
-        options: {
-          choices: [
-            { id: '1', text: 'Skincare', value: 'skincare' },
-            { id: '2', text: 'Haircare', value: 'haircare' },
-            { id: '3', text: 'Makeup', value: 'makeup' },
-            { id: '4', text: 'Fragrance', value: 'fragrance' },
-          ],
-        },
+        options: [
+          { id: '1', text: 'Oily', value: 'oily' },
+          { id: '2', text: 'Dry', value: 'dry' },
+          { id: '3', text: 'Combination', value: 'combination' },
+          { id: '4', text: 'Normal', value: 'normal' },
+          { id: '5', text: 'Sensitive', value: 'sensitive' },
+        ],
         settings: {
-          randomizeChoices: false,
-          showOtherOption: false,
+          randomizeOptions: false,
+          showImage: false,
         },
       },
     }),
-    prisma.question.create({
-      data: {
+    prisma.question.upsert({
+      where: { id: 'question_2' },
+      update: {},
+      create: {
+        id: 'question_2',
         quizId: quiz.id,
         order: 2,
         type: 'SINGLE_CHOICE',
-        text: 'What is your skin type?',
-        description: 'This helps us recommend the right products',
+        text: 'What are your main skin concerns?',
+        description: 'Select all that apply',
         required: true,
-        options: {
-          choices: [
-            { id: '1', text: 'Dry', value: 'dry' },
-            { id: '2', text: 'Oily', value: 'oily' },
-            { id: '3', text: 'Combination', value: 'combination' },
-            { id: '4', text: 'Normal', value: 'normal' },
-            { id: '5', text: 'Sensitive', value: 'sensitive' },
-          ],
-        },
+        options: [
+          { id: '1', text: 'Acne', value: 'acne' },
+          { id: '2', text: 'Aging', value: 'aging' },
+          { id: '3', text: 'Dark spots', value: 'dark_spots' },
+          { id: '4', text: 'Dryness', value: 'dryness' },
+          { id: '5', text: 'Redness', value: 'redness' },
+          { id: '6', text: 'Uneven texture', value: 'uneven_texture' },
+        ],
         settings: {
-          randomizeChoices: false,
-          showOtherOption: false,
+          randomizeOptions: false,
+          showImage: false,
         },
       },
     }),
-    prisma.question.create({
-      data: {
+    prisma.question.upsert({
+      where: { id: 'question_3' },
+      update: {},
+      create: {
+        id: 'question_3',
         quizId: quiz.id,
         order: 3,
         type: 'RATING',
-        text: 'How important is natural/organic ingredients to you?',
-        description: 'Rate from 1 (not important) to 5 (very important)',
+        text: 'How would you rate your current skin care routine?',
+        description: '1 = No routine, 5 = Advanced routine',
         required: true,
         options: {
-          minRating: 1,
-          maxRating: 5,
+          min: 1,
+          max: 5,
+          step: 1,
           labels: {
-            1: 'Not Important',
-            2: 'Somewhat Important',
-            3: 'Important',
-            4: 'Very Important',
-            5: 'Extremely Important',
+            1: 'No routine',
+            2: 'Basic',
+            3: 'Good',
+            4: 'Advanced',
+            5: 'Expert',
           },
         },
         settings: {
           showLabels: true,
-          allowHalfRatings: false,
-        },
-      },
-    }),
-    prisma.question.create({
-      data: {
-        quizId: quiz.id,
-        order: 4,
-        type: 'TEXT',
-        text: 'Any specific concerns or preferences?',
-        description: 'Tell us more about what you\'re looking for',
-        required: false,
-        options: {
-          maxLength: 500,
-          placeholder: 'e.g., I prefer cruelty-free products, I have sensitive skin...',
-        },
-        settings: {
-          multiline: true,
-          showCharacterCount: true,
+          allowHalfSteps: false,
         },
       },
     }),
   ]);
 
-  // Create sample logic rules
-  console.log('🔀 Creating sample logic rules...');
-  await prisma.logicRule.create({
-    data: {
-      quizId: quiz.id,
-      type: 'SHOW_QUESTION',
-      conditions: {
-        questionId: questions[0].id,
-        operator: 'equals',
-        value: 'skincare',
-      },
-      actions: {
-        action: 'show_question',
-        targetQuestionId: questions[1].id,
-      },
-      priority: 1,
-      isActive: true,
-    },
-  });
+  console.log('✅ Questions created:', questions.length);
 
-  // Create sample submission
-  console.log('📊 Creating sample submission...');
-  const submission = await prisma.submission.create({
-    data: {
+  // Create sample logic rules
+  const logicRules = await Promise.all([
+    prisma.logicRule.upsert({
+      where: { id: 'rule_1' },
+      update: {},
+      create: {
+        id: 'rule_1',
+        quizId: quiz.id,
+        questionId: questions[1].id,
+        type: 'SHOW_QUESTION',
+        conditions: {
+          operator: 'AND',
+          rules: [
+            {
+              field: 'question_1',
+              operator: 'equals',
+              value: 'sensitive',
+            },
+          ],
+        },
+        actions: [
+          {
+            type: 'show_question',
+            target: 'question_2',
+          },
+        ],
+        priority: 1,
+        isActive: true,
+      },
+    }),
+  ]);
+
+  console.log('✅ Logic rules created:', logicRules.length);
+
+  // Create a sample submission
+  const submission = await prisma.submission.upsert({
+    where: { id: 'sample_submission_1' },
+    update: {},
+    create: {
+      id: 'sample_submission_1',
       quizId: quiz.id,
       sessionId: 'sample_session_123',
       status: 'COMPLETED',
       metadata: {
-        userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
-        ipAddress: '192.168.1.1',
-        referrer: 'https://sample-shop.myshopify.com',
+        userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)',
+        ipAddress: '127.0.0.1',
+        referrer: 'https://quizplayground.myshopify.com',
+        deviceType: 'desktop',
       },
+      startedAt: new Date(Date.now() - 300000), // 5 minutes ago
       completedAt: new Date(),
     },
   });
 
+  console.log('✅ Submission created:', submission.id);
+
   // Create sample answers
-  console.log('✏️ Creating sample answers...');
-  await Promise.all([
-    prisma.answer.create({
-      data: {
+  const answers = await Promise.all([
+    prisma.answer.upsert({
+      where: { id: 'answer_1' },
+      update: {},
+      create: {
+        id: 'answer_1',
         submissionId: submission.id,
         questionId: questions[0].id,
-        value: 'skincare',
-        metadata: {
-          answeredAt: new Date(),
-          timeSpent: 15,
-        },
-      },
-    }),
-    prisma.answer.create({
-      data: {
-        submissionId: submission.id,
-        questionId: questions[1].id,
         value: 'combination',
         metadata: {
-          answeredAt: new Date(),
-          timeSpent: 12,
+          timeSpent: 15000, // 15 seconds
+          confidence: 0.9,
         },
       },
     }),
-    prisma.answer.create({
-      data: {
+    prisma.answer.upsert({
+      where: { id: 'answer_2' },
+      update: {},
+      create: {
+        id: 'answer_2',
+        submissionId: submission.id,
+        questionId: questions[1].id,
+        value: ['acne', 'aging'],
+        metadata: {
+          timeSpent: 25000, // 25 seconds
+          confidence: 0.8,
+        },
+      },
+    }),
+    prisma.answer.upsert({
+      where: { id: 'answer_3' },
+      update: {},
+      create: {
+        id: 'answer_3',
         submissionId: submission.id,
         questionId: questions[2].id,
-        value: 4,
+        value: 3,
         metadata: {
-          answeredAt: new Date(),
-          timeSpent: 8,
+          timeSpent: 10000, // 10 seconds
+          confidence: 0.7,
         },
       },
     }),
   ]);
 
+  console.log('✅ Answers created:', answers.length);
+
   // Create sample analytics events
-  console.log('📈 Creating sample analytics events...');
-  await Promise.all([
-    prisma.analyticsEvent.create({
-      data: {
+  const analyticsEvents = await Promise.all([
+    prisma.analyticsEvent.upsert({
+      where: { id: 'event_1' },
+      update: {},
+      create: {
+        id: 'event_1',
         quizId: quiz.id,
         submissionId: submission.id,
         eventType: 'quiz_started',
         eventData: {
-          timestamp: new Date(),
-          source: 'storefront',
+          timestamp: submission.startedAt,
+          source: 'homepage',
         },
         metadata: {
-          userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
-          ipAddress: '192.168.1.1',
+          userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)',
+          ipAddress: '127.0.0.1',
         },
       },
     }),
-    prisma.analyticsEvent.create({
-      data: {
+    prisma.analyticsEvent.upsert({
+      where: { id: 'event_2' },
+      update: {},
+      create: {
+        id: 'event_2',
+        quizId: quiz.id,
+        submissionId: submission.id,
+        eventType: 'question_answered',
+        eventData: {
+          questionId: questions[0].id,
+          answer: 'combination',
+          timeSpent: 15000,
+        },
+        metadata: {
+          userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)',
+          ipAddress: '127.0.0.1',
+        },
+      },
+    }),
+    prisma.analyticsEvent.upsert({
+      where: { id: 'event_3' },
+      update: {},
+      create: {
+        id: 'event_3',
         quizId: quiz.id,
         submissionId: submission.id,
         eventType: 'quiz_completed',
         eventData: {
-          timestamp: new Date(),
-          totalQuestions: 4,
-          answeredQuestions: 3,
-          timeSpent: 35,
+          timestamp: submission.completedAt,
+          totalTime: 300000, // 5 minutes
+          questionsAnswered: 3,
         },
         metadata: {
-          userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
-          ipAddress: '192.168.1.1',
+          userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)',
+          ipAddress: '127.0.0.1',
         },
       },
     }),
   ]);
 
-  console.log('✅ Database seeding completed successfully!');
-  console.log(`📊 Created: ${shop.id} shop, ${quiz.id} quiz, ${questions.length} questions, ${submission.id} submission`);
+  console.log('✅ Analytics events created:', analyticsEvents.length);
+
+  console.log('🎉 Database seeding completed successfully!');
+  console.log('');
+  console.log('📊 Sample data created:');
+  console.log(`   - Shop: ${shop.shopifyDomain}`);
+  console.log(`   - Quiz: ${quiz.title}`);
+  console.log(`   - Questions: ${questions.length}`);
+  console.log(`   - Logic Rules: ${logicRules.length}`);
+  console.log(`   - Submission: ${submission.id}`);
+  console.log(`   - Answers: ${answers.length}`);
+  console.log(`   - Analytics Events: ${analyticsEvents.length}`);
 }
 
 main()
