@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_INTERCEPTOR, APP_FILTER } from '@nestjs/core';
 import { ThrottlerModule } from '@nestjs/throttler';
@@ -18,6 +18,7 @@ import { MonitoringModule } from './monitoring/monitoring.module';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import { ShopifyAuthMiddleware } from './shopify/shopify-auth.middleware';
 
 @Module({
   imports: [
@@ -68,4 +69,15 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter';
     },
   ],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(ShopifyAuthMiddleware)
+      .forRoutes(
+        { path: 'api/v1/quizzes*', method: RequestMethod.ALL },
+        { path: 'api/v1/questions*', method: RequestMethod.ALL },
+        { path: 'api/v1/submissions*', method: RequestMethod.ALL },
+        { path: 'api/v1/analytics*', method: RequestMethod.ALL },
+      );
+  }
+}

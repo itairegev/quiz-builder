@@ -22,7 +22,7 @@ import {
 import { QuizzesService } from './quizzes.service';
 import { CreateQuizDto, UpdateQuizDto, QuizQueryDto, QuizResponseDto } from './dto';
 import { ShopifyAuthGuard } from '../auth/guards/shopify-auth.guard';
-import { CurrentShop } from '../auth/decorators/current-shop.decorator';
+import { CurrentShopId } from '../auth/decorators/current-shop.decorator';
 
 @ApiTags('quizzes')
 @Controller('quizzes')
@@ -41,7 +41,7 @@ export class QuizzesController {
   @ApiResponse({ status: 400, description: 'Bad request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   async createQuiz(
-    @CurrentShop() shopId: string,
+    @CurrentShopId() shopId: string,
     @Body() createQuizDto: CreateQuizDto,
   ): Promise<QuizResponseDto> {
     return this.quizzesService.createQuiz(shopId, createQuizDto);
@@ -59,7 +59,7 @@ export class QuizzesController {
   })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   async findAllQuizzes(
-    @CurrentShop() shopId: string,
+    @CurrentShopId() shopId: string,
     @Query() query: QuizQueryDto,
   ): Promise<QuizResponseDto[]> {
     return this.quizzesService.findAllQuizzes(shopId, query);
@@ -76,7 +76,7 @@ export class QuizzesController {
   @ApiResponse({ status: 404, description: 'Quiz not found' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   async findQuizById(
-    @CurrentShop() shopId: string,
+    @CurrentShopId() shopId: string,
     @Param('id') id: string,
   ): Promise<QuizResponseDto> {
     return this.quizzesService.findQuizById(shopId, id);
@@ -94,7 +94,7 @@ export class QuizzesController {
   @ApiResponse({ status: 400, description: 'Bad request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   async updateQuiz(
-    @CurrentShop() shopId: string,
+    @CurrentShopId() shopId: string,
     @Param('id') id: string,
     @Body() updateQuizDto: UpdateQuizDto,
   ): Promise<QuizResponseDto> {
@@ -109,7 +109,7 @@ export class QuizzesController {
   @ApiResponse({ status: 404, description: 'Quiz not found' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   async deleteQuiz(
-    @CurrentShop() shopId: string,
+    @CurrentShopId() shopId: string,
     @Param('id') id: string,
   ): Promise<void> {
     return this.quizzesService.deleteQuiz(shopId, id);
@@ -127,7 +127,7 @@ export class QuizzesController {
   @ApiResponse({ status: 400, description: 'Quiz cannot be published' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   async publishQuiz(
-    @CurrentShop() shopId: string,
+    @CurrentShopId() shopId: string,
     @Param('id') id: string,
   ): Promise<QuizResponseDto> {
     return this.quizzesService.publishQuiz(shopId, id);
@@ -144,7 +144,7 @@ export class QuizzesController {
   @ApiResponse({ status: 404, description: 'Quiz not found' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   async archiveQuiz(
-    @CurrentShop() shopId: string,
+    @CurrentShopId() shopId: string,
     @Param('id') id: string,
   ): Promise<QuizResponseDto> {
     return this.quizzesService.archiveQuiz(shopId, id);
@@ -160,7 +160,7 @@ export class QuizzesController {
   @ApiResponse({ status: 404, description: 'Quiz not found' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   async getQuizAnalytics(
-    @CurrentShop() shopId: string,
+    @CurrentShopId() shopId: string,
     @Param('id') id: string,
   ) {
     return this.quizzesService.getQuizAnalytics(shopId, id);
