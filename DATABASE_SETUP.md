@@ -19,7 +19,7 @@ Run the following SQL commands as a PostgreSQL superuser:
 CREATE DATABASE shopify_quiz_builder;
 
 -- Create the user
-CREATE USER quiz_builder_server_user WITH PASSWORD 'quiz_builder_password';
+CREATE USER quiz_builder_server_user WITH PASSWORD '6409b7447d251b211049';
 
 -- Grant privileges
 GRANT ALL PRIVILEGES ON DATABASE shopify_quiz_builder TO quiz_builder_server_user;
@@ -42,7 +42,7 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES IN SCHEMA publi
 Update your `.env` file with:
 
 ```bash
-DATABASE_URL=postgresql://quiz_builder_server_user:quiz_builder_password@localhost:5432/shopify_quiz_builder?schema=public
+DATABASE_URL=postgresql://quiz_builder_server_user:6409b7447d251b211049@localhost:5432/shopify_quiz_builder?schema=public
 ```
 
 ### 3. Run Database Migrations
@@ -80,6 +80,25 @@ The application uses the following models:
 ### Migration Issues
 - Reset database: `npm run db:reset`
 - Check Prisma logs: `npm run db:studio`
+
+### SQL Syntax Issues
+If you encounter syntax errors with `ALTER DEFAULT PRIVILEGES`, try running the commands separately:
+
+```sql
+-- First, connect to the shopify_quiz_builder database
+\c shopify_quiz_builder;
+
+-- Then run these commands one by one:
+GRANT ALL ON SCHEMA public TO quiz_builder_server_user;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO quiz_builder_server_user;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO quiz_builder_server_user;
+
+-- Set default privileges separately
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO quiz_builder_server_user;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO quiz_builder_server_user;
+```
+
+**Alternative approach**: Use the step-by-step script in `scripts/create-db-step-by-step.sql`
 
 ## Development Commands
 
