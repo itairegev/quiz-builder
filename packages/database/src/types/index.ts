@@ -13,28 +13,65 @@ export type {
   LogicRuleType,
 } from '@prisma/client';
 
-// Custom types for the application
-export interface QuizWithRelations extends Quiz {
-  shop: Shop;
-  questions: Question[];
-  logicRules: LogicRule[];
-  submissions: Submission[];
+// Basic type definitions without extending Prisma types
+export interface QuizWithRelations {
+  id: string;
+  shopId: string;
+  title: string;
+  description?: string;
+  status: string;
+  settings?: any;
+  theme?: any;
+  publishedAt?: Date;
+  scheduledAt?: Date;
+  createdAt: Date;
+  updatedAt: Date;
+  shop?: any;
+  questions?: any[];
+  logicRules?: any[];
+  submissions?: any[];
 }
 
-export interface QuestionWithRelations extends Question {
-  quiz: Quiz;
-  logicRules: LogicRule[];
-  answers: Answer[];
+export interface QuestionWithRelations {
+  id: string;
+  quizId: string;
+  order: number;
+  type: string;
+  text: string;
+  description?: string;
+  required: boolean;
+  options?: any;
+  settings?: any;
+  createdAt: Date;
+  updatedAt: Date;
+  quiz?: any;
+  logicRules?: any[];
+  answers?: any[];
 }
 
-export interface SubmissionWithRelations extends Submission {
-  quiz: Quiz;
-  answers: Answer[];
+export interface SubmissionWithRelations {
+  id: string;
+  quizId: string;
+  sessionId: string;
+  status: string;
+  metadata?: any;
+  startedAt: Date;
+  completedAt?: Date;
+  createdAt: Date;
+  updatedAt: Date;
+  quiz?: any;
+  answers?: any[];
 }
 
-export interface AnswerWithRelations extends Answer {
-  submission: Submission;
-  question: Question;
+export interface AnswerWithRelations {
+  id: string;
+  submissionId: string;
+  questionId: string;
+  value: any;
+  metadata?: any;
+  createdAt: Date;
+  submission?: any;
+  question?: any;
 }
 
 // Quiz creation and update types
@@ -42,7 +79,7 @@ export interface CreateQuizData {
   shopId: string;
   title: string;
   description?: string;
-  status?: QuizStatus;
+  status?: string;
   settings?: Record<string, any>;
   theme?: Record<string, any>;
 }
@@ -50,7 +87,7 @@ export interface CreateQuizData {
 export interface UpdateQuizData {
   title?: string;
   description?: string;
-  status?: QuizStatus;
+  status?: string;
   settings?: Record<string, any>;
   theme?: Record<string, any>;
 }
@@ -59,7 +96,7 @@ export interface UpdateQuizData {
 export interface CreateQuestionData {
   quizId: string;
   order: number;
-  type: QuestionType;
+  type: string;
   text: string;
   description?: string;
   required?: boolean;
@@ -69,7 +106,7 @@ export interface CreateQuestionData {
 
 export interface UpdateQuestionData {
   order?: number;
-  type?: QuestionType;
+  type?: string;
   text?: string;
   description?: string;
   required?: boolean;
@@ -81,7 +118,7 @@ export interface UpdateQuestionData {
 export interface CreateLogicRuleData {
   quizId?: string;
   questionId?: string;
-  type: LogicRuleType;
+  type: string;
   conditions: Record<string, any>;
   actions: Record<string, any>;
   priority?: number;
@@ -111,10 +148,10 @@ export interface CreateAnalyticsEventData {
   metadata?: Record<string, any>;
 }
 
-// Database query types
+// Filter types
 export interface QuizFilters {
   shopId?: string;
-  status?: QuizStatus;
+  status?: string;
   search?: string;
   limit?: number;
   offset?: number;
@@ -122,13 +159,13 @@ export interface QuizFilters {
 
 export interface QuestionFilters {
   quizId?: string;
-  type?: QuestionType;
+  type?: string;
   required?: boolean;
 }
 
 export interface SubmissionFilters {
   quizId?: string;
-  status?: SubmissionStatus;
+  status?: string;
   dateFrom?: Date;
   dateTo?: Date;
 }

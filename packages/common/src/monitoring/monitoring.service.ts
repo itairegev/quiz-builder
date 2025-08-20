@@ -128,7 +128,7 @@ export class MonitoringService {
     this.healthChecks.set(name, healthCheck);
 
     if (status === 'unhealthy') {
-      this.logger.warn(`Health check failed: ${name}`, undefined, { healthCheck: name, message, details });
+      this.logger.warn(`Health check failed: ${name}`, { healthCheck: name, message, details });
     }
   }
 
