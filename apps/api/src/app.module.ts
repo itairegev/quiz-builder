@@ -13,7 +13,7 @@ import { SubmissionsModule } from './submissions/submissions.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { ShopifyModule } from './shopify/shopify.module';
 import { HealthModule } from './health/health.module';
-// import { MonitoringModule } from './monitoring/monitoring.module';
+import { MonitoringModule } from './monitoring/monitoring.module';
 
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
@@ -49,7 +49,7 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter';
     AnalyticsModule,
     ShopifyModule,
     HealthModule,
-    // MonitoringModule,
+    MonitoringModule,
   ],
   controllers: [AppController],
   providers: [

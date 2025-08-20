@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, UseGuards, Param } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { MonitoringService } from '@shopify-quiz-builder/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -32,7 +32,7 @@ export class MonitoringController {
   @ApiResponse({ status: 200, description: 'Metric data retrieved successfully' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'Metric not found' })
-  getMetricByName(name: string) {
+  getMetricByName(@Param('name') name: string) {
     const metrics = this.monitoringService.getMetrics(name);
     const summary = this.monitoringService.getMetricSummary(name);
     
