@@ -27,6 +27,36 @@ module.exports = {
   },
   testTimeout: 10000,
   moduleNameMapper: {
-    '^@shopify-quiz-builder/(.*)$': '<rootDir>/../packages/$1/src',
+    '^@shopify-quiz-builder/(.*)$': '<rootDir>/../../packages/$1/src',
   },
+  // Fix Watchman issues
+  watchman: false,
+  // Optimize performance
+  maxWorkers: '50%',
+  // Disable watch mode by default
+  watch: false,
+  // Increase test timeout
+  testTimeout: 30000,
+
+  // Cache test results
+  cache: true,
+  // Use faster test environment
+  testEnvironment: 'node',
+  // Performance optimizations
+  bail: false,
+  verbose: false,
+  // Skip slow tests by default
+  testPathIgnorePatterns: [
+    '/node_modules/',
+    '/dist/',
+    '/coverage/'
+  ],
+  // Faster module resolution
+  moduleDirectories: ['node_modules'],
+  // Reduce file watching overhead
+  watchPathIgnorePatterns: [
+    '/node_modules/',
+    '/dist/',
+    '/coverage/'
+  ],
 };

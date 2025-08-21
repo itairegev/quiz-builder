@@ -17,7 +17,9 @@ import { MonitoringModule } from './monitoring/monitoring.module';
 
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
-import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import { PerformanceInterceptor } from './common/interceptors/performance.interceptor';
+import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
+import { RequestIdMiddleware } from './common/middleware/request-id.middleware';
 import { ShopifyAuthMiddleware } from './shopify/shopify-auth.middleware';
 
 @Module({
@@ -61,16 +63,26 @@ import { ShopifyAuthMiddleware } from './shopify/shopify-auth.middleware';
     },
     {
       provide: APP_INTERCEPTOR,
+      useClass: PerformanceInterceptor,
+    },
+    {
+      provide: APP_INTERCEPTOR,
       useClass: TransformInterceptor,
     },
     {
       provide: APP_FILTER,
-      useClass: HttpExceptionFilter,
+      useClass: GlobalExceptionFilter,
     },
   ],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
+    // Apply request ID middleware globally
+    consumer
+      .apply(RequestIdMiddleware)
+      .forRoutes('*');
+
+    // Apply Shopify auth middleware to protected routes
     consumer
       .apply(ShopifyAuthMiddleware)
       .forRoutes(

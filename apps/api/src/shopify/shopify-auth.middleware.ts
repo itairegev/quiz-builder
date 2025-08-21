@@ -9,9 +9,15 @@ export class ShopifyAuthMiddleware implements NestMiddleware {
   async use(req: Request, res: Response, next: NextFunction) {
     try {
       const shopDomain = req.headers['x-shopify-shop-domain'] as string;
-      const accessToken = req.headers.authorization?.replace('Bearer ', '');
-
-      if (!shopDomain || !accessToken) {
+      const authHeader = req.headers.authorization;
+      
+      if (!shopDomain || !authHeader || !authHeader.startsWith('Bearer ')) {
+        throw new UnauthorizedException('Shopify authentication required');
+      }
+      
+      const accessToken = authHeader.replace('Bearer ', '');
+      
+      if (!accessToken) {
         throw new UnauthorizedException('Shopify authentication required');
       }
 

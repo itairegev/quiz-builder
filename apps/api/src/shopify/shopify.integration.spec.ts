@@ -5,6 +5,7 @@ import { ShopifyModule } from './shopify.module';
 import { AuthModule } from '../auth/auth.module';
 import { DatabaseModule } from '../database/database.module';
 import { ConfigModule } from '@nestjs/config';
+import { ShopifyService } from './shopify.service';
 
 describe('Shopify Authentication Integration', () => {
   let app: INestApplication;
@@ -42,12 +43,12 @@ describe('Shopify Authentication Integration', () => {
         ShopifyModule,
       ],
     })
-      .overrideProvider('ShopifyService')
+      .overrideProvider(ShopifyService)
       .useValue(mockShopifyService)
       .compile();
 
     app = moduleFixture.createNestApplication();
-    shopifyService = moduleFixture.get('ShopifyService');
+    shopifyService = moduleFixture.get(ShopifyService);
     await app.init();
   });
 
