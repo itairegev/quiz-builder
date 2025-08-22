@@ -82,8 +82,8 @@ describe('ShopifyAuthGuard', () => {
         'test.myshopify.com',
         'test-token'
       );
-      expect(mockRequest.shop).toEqual(mockShop);
-      expect(mockRequest.shopId).toBe('test-shop-id');
+      expect((mockRequest as any).shop).toEqual(mockShop);
+      expect((mockRequest as any).shopId).toBe('test-shop-id');
     });
 
     it('should throw UnauthorizedException when shop domain is missing', async () => {

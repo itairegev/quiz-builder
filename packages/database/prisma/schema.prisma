@@ -58,11 +58,18 @@ model Shop {
   name        String?
   currency    String   @default("USD")
   timezone    String   @default("UTC")
+  status      String   @default("active") // active, uninstalled
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   // Relations
   quizzes Quiz[]
+  webhookSubscriptions WebhookSubscription[]
+  customers Customer[]
+  orders Order[]
+  products Product[]
+  collections Collection[]
+  webhookEventLogs WebhookEventLog[]
 
   @@map("shops")
 }
@@ -179,6 +186,118 @@ model AnalyticsEvent {
   submission  Submission?  @relation(fields: [submissionId], references: [id], onDelete: SetNull)
 
   @@map("analytics_events")
+}
+
+// Webhook Models
+model WebhookSubscription {
+  id          String   @id @default(cuid())
+  shopId      String
+  topic       String
+  address     String
+  format      String
+  version     String
+  status      String   @default("active") // active, disabled
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  shop        Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+  @@unique([shopId, topic])
+  @@map("webhook_subscriptions")
+}
+
+model WebhookEventLog {
+  id          String   @id @default(cuid())
+  shopId      String
+  topic       String
+  status      String   // processed, failed, unknown_topic
+  data        Json?
+  errorMessage String?
+  requestId   String
+  timestamp   DateTime @default(now())
+
+  // Relations
+  shop        Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+  @@map("webhook_event_logs")
+}
+
+// Shopify Data Models
+model Customer {
+  id                String   @id @default(cuid())
+  shopifyCustomerId String
+  shopId            String
+  email             String
+  firstName         String?
+  lastName          String?
+  phone             String?
+  tags              String[]
+  acceptsMarketing  Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  shop        Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+  @@unique([shopifyCustomerId, shopId])
+  @@map("customers")
+}
+
+model Order {
+  id                String   @id @default(cuid())
+  shopifyOrderId    String
+  shopId            String
+  orderNumber       String
+  totalPrice        String
+  currency          String
+  customerId        String?
+  status            String   @default("pending") // pending, fulfilled, cancelled
+  fulfilledAt       DateTime?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  shop        Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+  @@unique([shopifyOrderId, shopId])
+  @@map("orders")
+}
+
+model Product {
+  id                String   @id @default(cuid())
+  shopifyProductId  String
+  shopId            String
+  title             String
+  handle            String
+  productType       String?
+  vendor            String?
+  tags              String[]
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  shop        Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+  @@unique([shopifyProductId, shopId])
+  @@map("products")
+}
+
+model Collection {
+  id                  String   @id @default(cuid())
+  shopifyCollectionId String
+  shopId              String
+  title               String
+  handle              String
+  description         String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  // Relations
+  shop        Shop     @relation(fields: [shopId], references: [id], onDelete: Cascade)
+
+  @@unique([shopifyCollectionId, shopId])
+  @@map("collections")
 }
 
 // Indexes for performance

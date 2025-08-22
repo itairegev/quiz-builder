@@ -1,7 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { LoggerService } from '../../../packages/common/src/logger/logger.service';
-import { MonitoringService } from '../../../packages/common/src/monitoring/monitoring.service';
+import { LoggerService, MonitoringService } from '@shopify-quiz-builder/common';
 import {
   BaseException,
   QuizNotFoundException,
@@ -25,8 +24,11 @@ export interface ErrorContext {
 @Injectable()
 export class ErrorHandlerService {
   private readonly logger = new Logger(ErrorHandlerService.name);
-  private readonly loggerService = new LoggerService();
-  private readonly monitoringService = new MonitoringService();
+
+  constructor(
+    private readonly loggerService: LoggerService,
+    private readonly monitoringService: MonitoringService,
+  ) {}
 
   /**
    * Handle Prisma database errors and convert them to appropriate custom exceptions
@@ -144,13 +146,7 @@ export class ErrorHandlerService {
     }
 
     // Generic validation error
-    throw new BaseException(
-      message,
-      400,
-      'VALIDATION_ERROR',
-      details,
-      context.requestId,
-    );
+    throw new DatabaseException(message, details, context.requestId);
   }
 
   /**
@@ -182,13 +178,7 @@ export class ErrorHandlerService {
       throw new QuestionNotFoundException(resourceId, context.requestId);
     }
 
-    throw new BaseException(
-      message,
-      404,
-      'NOT_FOUND',
-      { resourceType, resourceId },
-      context.requestId,
-    );
+    throw new DatabaseException(message, { resourceType, resourceId }, context.requestId);
   }
 
   /**
@@ -211,10 +201,9 @@ export class ErrorHandlerService {
       resourceType,
     });
 
-    throw new BaseException(
+    throw new ShopifyApiException(
       `Access denied to ${resourceType.toLowerCase()} '${resourceId}'`,
       403,
-      'ACCESS_DENIED',
       { resourceType, resourceId },
       context.requestId,
     );

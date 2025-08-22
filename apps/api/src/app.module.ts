@@ -12,6 +12,7 @@ import { QuestionsModule } from './questions/questions.module';
 import { SubmissionsModule } from './submissions/submissions.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { ShopifyModule } from './shopify/shopify.module';
+import { QuizBuilderModule } from './quiz-builder/quiz-builder.module';
 import { HealthModule } from './health/health.module';
 import { MonitoringModule } from './monitoring/monitoring.module';
 
@@ -51,6 +52,7 @@ import { ShopifyAuthMiddleware } from './shopify/shopify-auth.middleware';
     SubmissionsModule,
     AnalyticsModule,
     ShopifyModule,
+    QuizBuilderModule,
     HealthModule,
     MonitoringModule,
   ],
@@ -90,6 +92,7 @@ export class AppModule {
         { path: 'api/v1/questions*', method: RequestMethod.ALL },
         { path: 'api/v1/submissions*', method: RequestMethod.ALL },
         { path: 'api/v1/analytics*', method: RequestMethod.ALL },
+        { path: 'api/v1/quiz-builder*', method: RequestMethod.ALL },
       );
   }
 }

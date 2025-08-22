@@ -79,7 +79,7 @@ describe('Core API Controllers Integration', () => {
       .compile();
 
     app = moduleFixture.createNestApplication();
-    mockShopifyAuthGuard = mockGuard as jest.Mocked<ShopifyAuthGuard>;
+    mockShopifyAuthGuard = mockGuard as unknown as jest.Mocked<ShopifyAuthGuard>;
 
     await app.init();
   });

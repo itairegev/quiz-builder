@@ -6,11 +6,12 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { MonitoringService } from '../../../packages/common/src/monitoring/monitoring.service';
+import { MonitoringService, LoggerService } from '@shopify-quiz-builder/common';
 
 @Injectable()
 export class PerformanceInterceptor implements NestInterceptor {
-  private readonly monitoringService = new MonitoringService();
+  private readonly loggerService = new LoggerService();
+  private readonly monitoringService = new MonitoringService(this.loggerService);
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const request = context.switchToHttp().getRequest();

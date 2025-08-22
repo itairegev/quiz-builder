@@ -9,7 +9,7 @@ import {
 import { Request, Response } from 'express';
 import { Prisma } from '@prisma/client';
 import { BaseException, ErrorResponse } from '../exceptions';
-import { LoggerService } from '../../../packages/common/src/logger/logger.service';
+import { LoggerService } from '@shopify-quiz-builder/common';
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
@@ -41,9 +41,9 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         errorCode: customException.code,
         statusCode,
         path: request.url,
-        method: request.method,
-        userId: request.user?.id,
-        shopId: request.shop?.id,
+        httpMethod: request.method,
+        userId: (request as any).user?.id,
+        shopId: (request as any).shop?.id,
       });
     } else if (exception instanceof HttpException) {
       // NestJS HTTP exceptions
@@ -66,9 +66,9 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         requestId,
         statusCode,
         path: request.url,
-        method: request.method,
-        userId: request.user?.id,
-        shopId: request.shop?.id,
+        httpMethod: request.method,
+        userId: (request as any).user?.id,
+        shopId: (request as any).shop?.id,
       });
     } else if (exception instanceof Prisma.PrismaClientKnownRequestError) {
       // Prisma database errors
@@ -97,9 +97,9 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         errorCode: prismaError.code,
         statusCode,
         path: request.url,
-        method: request.method,
-        userId: request.user?.id,
-        shopId: request.shop?.id,
+        httpMethod: request.method,
+        userId: (request as any).user?.id,
+        shopId: (request as any).shop?.id,
         details: prismaError.meta,
       });
     } else if (exception instanceof Prisma.PrismaClientUnknownRequestError) {
@@ -124,9 +124,9 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         requestId,
         statusCode,
         path: request.url,
-        method: request.method,
-        userId: request.user?.id,
-        shopId: request.shop?.id,
+        httpMethod: request.method,
+        userId: (request as any).user?.id,
+        shopId: (request as any).shop?.id,
         originalError: exception.message,
       });
     } else if (exception instanceof Prisma.PrismaClientValidationError) {
@@ -151,9 +151,9 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         requestId,
         statusCode,
         path: request.url,
-        method: request.method,
-        userId: request.user?.id,
-        shopId: request.shop?.id,
+        httpMethod: request.method,
+        userId: (request as any).user?.id,
+        shopId: (request as any).shop?.id,
         originalError: exception.message,
       });
     } else {
@@ -181,9 +181,9 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         requestId,
         statusCode,
         path: request.url,
-        method: request.method,
-        userId: request.user?.id,
-        shopId: request.shop?.id,
+        httpMethod: request.method,
+        userId: (request as any).user?.id,
+        shopId: (request as any).shop?.id,
         originalError: error.message,
         stack: error.stack,
       });

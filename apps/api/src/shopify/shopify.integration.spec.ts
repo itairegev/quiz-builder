@@ -1,10 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { ShopifyModule } from './shopify.module';
-import { AuthModule } from '../auth/auth.module';
-import { DatabaseModule } from '../database/database.module';
-import { ConfigModule } from '@nestjs/config';
+import { AppModule } from '../app.module';
 import { ShopifyService } from './shopify.service';
 
 describe('Shopify Authentication Integration', () => {
@@ -33,21 +30,14 @@ describe('Shopify Authentication Integration', () => {
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [
-        ConfigModule.forRoot({
-          isGlobal: true,
-          envFilePath: ['.env.test', '.env'],
-        }),
-        DatabaseModule,
-        AuthModule,
-        ShopifyModule,
-      ],
+      imports: [AppModule],
     })
       .overrideProvider(ShopifyService)
       .useValue(mockShopifyService)
       .compile();
 
     app = moduleFixture.createNestApplication();
+    app.setGlobalPrefix('api/v1'); // Add the same global prefix as main.ts
     shopifyService = moduleFixture.get(ShopifyService);
     await app.init();
   });
@@ -128,10 +118,16 @@ describe('Shopify Authentication Integration', () => {
         .set('x-shopify-topic', 'app/uninstalled')
         .set('x-shopify-shop-domain', 'test.myshopify.com')
         .send({ test: 'data' })
-        .expect(200);
+        .expect(201);
 
       expect(response.body).toEqual({
-        message: 'Webhook processed successfully',
+        data: {
+          message: 'Webhook processed successfully',
+        },
+        statusCode: 201,
+        message: 'Success',
+        timestamp: expect.any(String),
+        path: '/api/v1/shopify/webhook',
       });
 
       expect(mockShopifyService.validateWebhookSignature).toHaveBeenCalledWith(
@@ -171,12 +167,18 @@ describe('Shopify Authentication Integration', () => {
         .set('x-shopify-shop-domain', 'test.myshopify.com')
         .set('authorization', 'Bearer test-access-token')
         .send({ code: 'test-code', state: 'test-state' })
-        .expect(200);
+        .expect(201);
 
       expect(response.body).toEqual({
-        message: 'OAuth callback processed successfully',
-        shopId: mockShop.id,
-        shopDomain: mockShop.shopifyDomain,
+        data: {
+          message: 'OAuth callback processed successfully',
+          shopId: mockShop.id,
+          shopDomain: mockShop.shopifyDomain,
+        },
+        statusCode: 201,
+        message: 'Success',
+        timestamp: expect.any(String),
+        path: '/api/v1/shopify/auth/callback',
       });
     });
 
@@ -223,23 +225,16 @@ describe('Shopify Authentication Integration', () => {
 
       // Override the quizzes service in the test module
       const moduleFixture: TestingModule = await Test.createTestingModule({
-        imports: [
-          ConfigModule.forRoot({
-            isGlobal: true,
-            envFilePath: ['.env.test', '.env'],
-          }),
-          DatabaseModule,
-          AuthModule,
-          ShopifyModule,
-        ],
+        imports: [AppModule],
       })
-        .overrideProvider('ShopifyService')
+        .overrideProvider(ShopifyService)
         .useValue(mockShopifyService)
         .overrideProvider('QuizzesService')
         .useValue(mockQuizzesService)
         .compile();
 
       const testApp = moduleFixture.createNestApplication();
+      testApp.setGlobalPrefix('api/v1'); // Add the same global prefix as main.ts
       await testApp.init();
 
       const response = await request(testApp.getHttpServer())

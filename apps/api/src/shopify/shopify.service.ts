@@ -1,6 +1,7 @@
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '@shopify-quiz-builder/database';
+import { ShopifyWebhookManagerService } from './shopify-webhook-manager.service';
 
 export interface ShopifyShop {
   id: string;
@@ -27,6 +28,7 @@ export class ShopifyService {
   constructor(
     private readonly configService: ConfigService,
     private readonly prisma: PrismaService,
+    private readonly webhookManager: ShopifyWebhookManagerService,
   ) {}
 
   /**
@@ -111,6 +113,28 @@ export class ShopifyService {
       });
 
       this.logger.log(`Shop ${shopData.shopifyDomain} upserted successfully`);
+
+      // Register default webhooks for new shops
+      if (shop.createdAt === shop.updatedAt) {
+        this.logger.log(`Registering default webhooks for new shop: ${shopData.shopifyDomain}`);
+        try {
+          const webhookResult = await this.webhookManager.registerDefaultWebhooks(
+            shopData.shopifyDomain,
+            shopData.accessToken,
+            true, // Include optional webhooks for new installations
+          );
+          
+          if (webhookResult.failed.length > 0) {
+            this.logger.warn(`Some webhooks failed to register for ${shopData.shopifyDomain}:`, webhookResult.failed);
+          }
+          
+          this.logger.log(`Webhook registration completed for ${shopData.shopifyDomain}. Success: ${webhookResult.success.length}, Failed: ${webhookResult.failed.length}`);
+        } catch (webhookError) {
+          this.logger.error(`Failed to register webhooks for ${shopData.shopifyDomain}:`, webhookError);
+          // Don't fail the shop creation if webhook registration fails
+        }
+      }
+
       return shop;
     } catch (error) {
       this.logger.error(`Error upserting shop ${shopData.shopifyDomain}:`, error);

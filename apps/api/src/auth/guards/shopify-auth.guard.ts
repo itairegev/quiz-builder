@@ -9,7 +9,14 @@ export class ShopifyAuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<Request>();
     const shopDomain = request.headers['x-shopify-shop-domain'] as string;
-    const accessToken = request.headers.authorization?.replace('Bearer ', '');
+    const authHeader = request.headers.authorization;
+    
+    // Validate authorization header format
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      throw new UnauthorizedException('Shopify authentication required');
+    }
+    
+    const accessToken = authHeader.replace('Bearer ', '');
 
     if (!shopDomain || !accessToken) {
       throw new UnauthorizedException('Shopify authentication required');

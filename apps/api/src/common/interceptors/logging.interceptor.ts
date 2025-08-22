@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { LoggerService } from '../../../packages/common/src/logger/logger.service';
+import { LoggerService } from '@shopify-quiz-builder/common';
 
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {

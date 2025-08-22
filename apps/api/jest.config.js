@@ -51,6 +51,10 @@ module.exports = {
     '/dist/',
     '/coverage/'
   ],
+  // Transform ignore patterns for ES modules
+  transformIgnorePatterns: [
+    'node_modules/(?!(graphql-request|@graphql-tools)/)'
+  ],
   // Faster module resolution
   moduleDirectories: ['node_modules'],
   // Reduce file watching overhead
