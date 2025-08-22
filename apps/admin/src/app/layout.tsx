@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import { AppProvider } from '@shopify/polaris';
+import { Providers } from '../components/Providers';
 import '@shopify/polaris/build/esm/styles.css';
 import './globals.css';
 
@@ -23,29 +23,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <AppProvider
-          i18n={{
-            Polaris: {
-              Common: {
-                close: 'Close',
-                cancel: 'Cancel',
-                save: 'Save',
-                delete: 'Delete',
-                edit: 'Edit',
-                add: 'Add',
-                remove: 'Remove',
-                search: 'Search',
-                loading: 'Loading...',
-                error: 'Error',
-                success: 'Success',
-                warning: 'Warning',
-                info: 'Information',
-              },
-            },
-          }}
-        >
+        <Providers>
           {children}
-        </AppProvider>
+        </Providers>
       </body>
     </html>
   );

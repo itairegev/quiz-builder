@@ -1,6 +1,6 @@
 'use client';
 
-import { Page, Layout, Card, Text, Button, Stack, Badge } from '@shopify/polaris';
+import { Page, Layout, Card, Text, Button, Badge, Box } from '@shopify/polaris';
 import { useState, useEffect } from 'react';
 
 export default function DashboardPage() {
@@ -46,13 +46,13 @@ export default function DashboardPage() {
         <Layout.Section>
           <Card>
             <div style={{ padding: '1.5rem' }}>
-              <Stack vertical spacing="loose">
+              <Box padding="4">
                 <div>
                   <Text variant="headingMd" as="h3">
                     Quick Stats
                   </Text>
                   <div style={{ marginTop: '1rem' }}>
-                    <Stack distribution="equalSpacing">
+                    <Box display="flex" justifyContent="space-between">
                       <div style={{ textAlign: 'center' }}>
                         <Text variant="headingLg" as="p">
                           0
@@ -77,10 +77,10 @@ export default function DashboardPage() {
                           Conversion Rate
                         </Text>
                       </div>
-                    </Stack>
+                    </Box>
                   </div>
                 </div>
-              </Stack>
+              </Box>
             </div>
           </Card>
         </Layout.Section>
@@ -88,13 +88,13 @@ export default function DashboardPage() {
         <Layout.Section>
           <Card>
             <div style={{ padding: '1.5rem' }}>
-              <Stack vertical spacing="loose">
+              <Box padding="4">
                 <div>
                   <Text variant="headingMd" as="h3">
                     Getting Started
                   </Text>
                   <div style={{ marginTop: '1rem' }}>
-                    <Stack vertical spacing="tight">
+                    <Box display="flex" flexDirection="column" gap="2">
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                         <Badge status="info">1</Badge>
                         <Text variant="bodyMd">
@@ -119,10 +119,10 @@ export default function DashboardPage() {
                           Start collecting leads and driving sales
                         </Text>
                       </div>
-                    </Stack>
+                    </Box>
                   </div>
                 </div>
-              </Stack>
+              </Box>
             </div>
           </Card>
         </Layout.Section>
@@ -130,7 +130,7 @@ export default function DashboardPage() {
         <Layout.Section>
           <Card>
             <div style={{ padding: '1.5rem' }}>
-              <Stack vertical spacing="loose">
+              <Box padding="4">
                 <div>
                   <Text variant="headingMd" as="h3">
                     Recent Activity
@@ -141,7 +141,7 @@ export default function DashboardPage() {
                     </Text>
                   </div>
                 </div>
-              </Stack>
+              </Box>
             </div>
           </Card>
         </Layout.Section>

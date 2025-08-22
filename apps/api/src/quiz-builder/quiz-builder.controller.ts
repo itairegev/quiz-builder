@@ -72,7 +72,10 @@ export class QuizBuilderController {
       });
     }
 
-    const quiz = await this.quizBuilderService.createQuizFromBuilder(shopId, createDto);
+    const quiz = await this.quizBuilderService.createQuizFromBuilder(shopId, {
+      ...createDto,
+      logicRules: createDto.logicRules || [],
+    });
     return quiz;
   }
 
@@ -119,7 +122,10 @@ export class QuizBuilderController {
       });
     }
 
-    const quiz = await this.quizBuilderService.updateQuizFromBuilder(shopId, quizId, updateDto);
+    const quiz = await this.quizBuilderService.updateQuizFromBuilder(shopId, quizId, {
+      ...updateDto,
+      logicRules: updateDto.logicRules || [],
+    });
     return quiz;
   }
 
@@ -196,7 +202,7 @@ export class QuizBuilderController {
     return this.quizBuilderService.bulkCreateQuestions(
       shopId,
       quizId,
-      bulkCreateDto.questions,
+      bulkCreateDto.questions as any,
     );
   }
 

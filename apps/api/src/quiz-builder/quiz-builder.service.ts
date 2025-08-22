@@ -5,12 +5,12 @@ import { LoggerService, MonitoringService } from '@shopify-quiz-builder/common';
 
 export interface QuizBuilderData {
   id?: string;
-  title: string;
+  title?: string;
   description?: string;
   settings?: QuizBuilderSettings;
   theme?: QuizBuilderTheme;
-  questions: QuestionBuilderData[];
-  logicRules: LogicRuleBuilderData[];
+  questions?: QuestionBuilderData[];
+  logicRules?: LogicRuleBuilderData[];
 }
 
 export interface QuizBuilderSettings {
@@ -42,7 +42,7 @@ export interface QuizBuilderTheme {
 export interface QuestionBuilderData {
   id?: string;
   order: number;
-  type: QuestionType;
+  type: string;
   text: string;
   description?: string;
   required: boolean;
@@ -83,10 +83,10 @@ export interface QuestionValidation {
 
 export interface LogicRuleBuilderData {
   id?: string;
-  type: LogicRuleType;
+  type: string;
   priority: number;
-  conditions: LogicCondition[];
-  actions: LogicAction[];
+  conditions?: LogicCondition[];
+  actions?: LogicAction[];
   isActive: boolean;
 }
 
@@ -137,7 +137,7 @@ export class QuizBuilderService {
         const createdQuiz = await tx.quiz.create({
           data: {
             shopId,
-            title: builderData.title,
+            title: builderData.title || 'Untitled Quiz',
             description: builderData.description,
             status: QuizStatus.DRAFT,
             settings: (builderData.settings || {}) as any,
@@ -147,39 +147,43 @@ export class QuizBuilderService {
 
         // Create questions
         const questions = [];
-        for (const questionData of builderData.questions) {
-          const question = await tx.question.create({
-            data: {
-              quizId: createdQuiz.id,
-              order: questionData.order,
-              type: questionData.type,
-              text: questionData.text,
-              description: questionData.description,
-              required: questionData.required,
-              options: (questionData.options || []) as any,
-              settings: ({
-                ...questionData.settings,
-                validation: questionData.validation,
-              }) as any,
-            },
-          });
-          questions.push(question);
+        if (builderData.questions) {
+          for (const questionData of builderData.questions) {
+            const question = await tx.question.create({
+              data: {
+                quizId: createdQuiz.id,
+                order: questionData.order,
+                type: questionData.type as QuestionType,
+                text: questionData.text,
+                description: questionData.description,
+                required: questionData.required,
+                options: (questionData.options || []) as any,
+                settings: ({
+                  ...questionData.settings,
+                  validation: questionData.validation,
+                }) as any,
+              },
+            });
+            questions.push(question);
+          }
         }
 
         // Create logic rules
         const logicRules = [];
-        for (const ruleData of builderData.logicRules) {
-          const rule = await tx.logicRule.create({
-            data: {
-              quizId: createdQuiz.id,
-              type: ruleData.type,
-              priority: ruleData.priority,
-              conditions: ruleData.conditions as any,
-              actions: ruleData.actions as any,
-              isActive: ruleData.isActive,
-            },
-          });
-          logicRules.push(rule);
+        if (builderData.logicRules) {
+          for (const ruleData of builderData.logicRules) {
+            const rule = await tx.logicRule.create({
+              data: {
+                quizId: createdQuiz.id,
+                type: ruleData.type as LogicRuleType,
+                priority: ruleData.priority,
+                conditions: (ruleData.conditions || []) as any,
+                actions: (ruleData.actions || []) as any,
+                isActive: ruleData.isActive,
+              },
+            });
+            logicRules.push(rule);
+          }
         }
 
         return {
@@ -225,8 +229,8 @@ export class QuizBuilderService {
         const quiz = await tx.quiz.update({
           where: { id: quizId },
           data: {
-            title: builderData.title,
-            description: builderData.description,
+            ...(builderData.title && { title: builderData.title }),
+            ...(builderData.description && { description: builderData.description }),
             settings: (builderData.settings || {}) as any,
             theme: (builderData.theme || {}) as any,
             updatedAt: new Date(),
@@ -239,39 +243,43 @@ export class QuizBuilderService {
 
         // Create new questions
         const questions = [];
-        for (const questionData of builderData.questions) {
-          const question = await tx.question.create({
-            data: {
-              quizId,
-              order: questionData.order,
-              type: questionData.type,
-              text: questionData.text,
-              description: questionData.description,
-              required: questionData.required,
-              options: (questionData.options || []) as any,
-              settings: ({
-                ...questionData.settings,
-                validation: questionData.validation,
-              }) as any,
-            },
-          });
-          questions.push(question);
+        if (builderData.questions) {
+          for (const questionData of builderData.questions) {
+            const question = await tx.question.create({
+              data: {
+                quizId,
+                order: questionData.order,
+                type: questionData.type as QuestionType,
+                text: questionData.text,
+                description: questionData.description,
+                required: questionData.required,
+                options: (questionData.options || []) as any,
+                settings: ({
+                  ...questionData.settings,
+                  validation: questionData.validation,
+                }) as any,
+              },
+            });
+            questions.push(question);
+          }
         }
 
         // Create new logic rules
         const logicRules = [];
-        for (const ruleData of builderData.logicRules) {
-          const rule = await tx.logicRule.create({
-            data: {
-              quizId,
-              type: ruleData.type,
-              priority: ruleData.priority,
-              conditions: ruleData.conditions as any,
-              actions: ruleData.actions as any,
-              isActive: ruleData.isActive,
-            },
-          });
-          logicRules.push(rule);
+        if (builderData.logicRules) {
+          for (const ruleData of builderData.logicRules) {
+            const rule = await tx.logicRule.create({
+              data: {
+                quizId,
+                type: ruleData.type as LogicRuleType,
+                priority: ruleData.priority,
+                conditions: (ruleData.conditions || []) as any,
+                actions: (ruleData.actions || []) as any,
+                isActive: ruleData.isActive,
+              },
+            });
+            logicRules.push(rule);
+          }
         }
 
         return {
@@ -427,7 +435,7 @@ export class QuizBuilderService {
     }
 
     // Logic rule validation
-    if (builderData.logicRules) {
+    if (builderData.logicRules && builderData.logicRules.length > 0) {
       builderData.logicRules.forEach((rule, index) => {
         if (!rule.conditions || rule.conditions.length === 0) {
           errors.push(`Logic rule ${index + 1} must have at least one condition`);
@@ -437,12 +445,14 @@ export class QuizBuilderService {
           errors.push(`Logic rule ${index + 1} must have at least one action`);
         }
 
-        rule.conditions.forEach((condition, condIndex) => {
-          const questionExists = builderData.questions.some(q => q.id === condition.questionId);
-          if (!questionExists) {
-            errors.push(`Logic rule ${index + 1}, condition ${condIndex + 1} references non-existent question`);
-          }
-        });
+        if (rule.conditions) {
+          rule.conditions.forEach((condition, condIndex) => {
+            const questionExists = builderData.questions.some(q => q.id === condition.questionId);
+            if (!questionExists) {
+              errors.push(`Logic rule ${index + 1}, condition ${condIndex + 1} references non-existent question`);
+            }
+          });
+        }
       });
     }
 
@@ -506,7 +516,7 @@ export class QuizBuilderService {
           data: {
             quizId,
             order: questionData.order,
-            type: questionData.type,
+            type: questionData.type as QuestionType,
             text: questionData.text,
             description: questionData.description,
             required: questionData.required,

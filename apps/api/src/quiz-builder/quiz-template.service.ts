@@ -496,8 +496,6 @@ export class QuizTemplateService {
           ],
           settings: {
             allowMultiple: true,
-            minSelections: 1,
-            maxSelections: 3,
           },
         },
       ],

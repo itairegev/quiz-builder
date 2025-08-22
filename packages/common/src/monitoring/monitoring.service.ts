@@ -108,12 +108,86 @@ export class MonitoringService {
     this.recordMetric('memory_rss', memoryUsage.rss, 'bytes', { type: 'rss' });
   }
 
-  recordQuizMetrics(quizId: string, event: string, count: number = 1) {
-    this.recordMetric('quiz_events', count, 'count', { quiz_id: quizId, event });
+  // Business metrics
+  recordQuizMetrics(quizId: string, event: string, count: number = 1, additionalData?: Record<string, any>) {
+    this.recordMetric('quiz_events', count, 'count', { 
+      quiz_id: quizId, 
+      event,
+      ...additionalData 
+    });
   }
 
-  recordShopifyMetrics(shopId: string, event: string, count: number = 1) {
-    this.recordMetric('shopify_events', count, 'count', { shop_id: shopId, event });
+  recordQuizCompletion(quizId: string, shopId: string, completionTime: number, userId?: string) {
+    this.recordMetric('quiz_completion', 1, 'count', { 
+      quiz_id: quizId, 
+      shop_id: shopId,
+      user_id: userId,
+      completion_time: completionTime.toString()
+    });
+    
+    this.recordMetric('quiz_completion_time', completionTime, 'ms', { 
+      quiz_id: quizId, 
+      shop_id: shopId 
+    });
+  }
+
+  recordQuestionInteraction(questionId: string, quizId: string, interactionType: string, responseTime: number) {
+    this.recordMetric('question_interaction', 1, 'count', {
+      question_id: questionId,
+      quiz_id: quizId,
+      interaction_type: interactionType,
+      response_time: responseTime.toString()
+    });
+  }
+
+  recordConversionEvent(quizId: string, shopId: string, conversionType: 'product_click' | 'add_to_cart' | 'purchase', value?: number) {
+    this.recordMetric('conversion_event', 1, 'count', {
+      quiz_id: quizId,
+      shop_id: shopId,
+      conversion_type: conversionType,
+      value: (value || 0).toString()
+    });
+
+    if (value) {
+      this.recordMetric('conversion_value', value, 'currency', {
+        quiz_id: quizId,
+        shop_id: shopId,
+        conversion_type: conversionType
+      });
+    }
+  }
+
+  recordShopifyMetrics(shopId: string, event: string, count: number = 1, additionalData?: Record<string, any>) {
+    this.recordMetric('shopify_events', count, 'count', { 
+      shop_id: shopId, 
+      event,
+      ...additionalData 
+    });
+  }
+
+  recordApiCallMetrics(endpoint: string, method: string, responseTime: number, statusCode: number, shopId?: string) {
+    this.recordMetric('api_call', 1, 'count', {
+      endpoint,
+      method,
+      status_code: statusCode.toString(),
+      shop_id: shopId
+    });
+
+    this.recordMetric('api_response_time', responseTime, 'ms', {
+      endpoint,
+      method,
+      shop_id: shopId
+    });
+
+    // Track error rates
+    if (statusCode >= 400) {
+      this.recordMetric('api_error', 1, 'count', {
+        endpoint,
+        method,
+        status_code: statusCode.toString(),
+        shop_id: shopId
+      });
+    }
   }
 
   // Health check management
@@ -211,6 +285,181 @@ export class MonitoringService {
     }
 
     return result;
+  }
+
+  // Advanced analytics methods
+  getAggregatedMetrics(name: string, timeWindowMinutes: number = 60): {
+    count: number;
+    sum: number;
+    average: number;
+    min: number;
+    max: number;
+    latest: number;
+  } {
+    const cutoffTime = new Date(Date.now() - timeWindowMinutes * 60 * 1000);
+    const metrics = this.getMetrics(name).filter(m => 
+      m.timestamp && m.timestamp > cutoffTime
+    );
+
+    if (metrics.length === 0) {
+      return { count: 0, sum: 0, average: 0, min: 0, max: 0, latest: 0 };
+    }
+
+    const values = metrics.map(m => m.value);
+    const sum = values.reduce((a, b) => a + b, 0);
+    
+    return {
+      count: metrics.length,
+      sum,
+      average: sum / metrics.length,
+      min: Math.min(...values),
+      max: Math.max(...values),
+      latest: metrics[metrics.length - 1].value
+    };
+  }
+
+  // Get error rate for a specific endpoint
+  getErrorRate(endpoint: string, timeWindowMinutes: number = 60): number {
+    const totalRequests = this.getAggregatedMetrics(`api_call`, timeWindowMinutes);
+    const errorRequests = this.getAggregatedMetrics(`api_error`, timeWindowMinutes);
+    
+    if (totalRequests.count === 0) return 0;
+    return (errorRequests.count / totalRequests.count) * 100;
+  }
+
+  // Get conversion rate for a specific quiz
+  getConversionRate(quizId: string, timeWindowMinutes: number = 60): number {
+    const completions = this.getAggregatedMetrics(`quiz_completion`, timeWindowMinutes);
+    const conversions = this.getAggregatedMetrics(`conversion_event`, timeWindowMinutes);
+    
+    if (completions.count === 0) return 0;
+    return (conversions.count / completions.count) * 100;
+  }
+
+  // Get performance insights
+  getPerformanceInsights(timeWindowMinutes: number = 60): {
+    averageResponseTime: number;
+    errorRate: number;
+    requestsPerMinute: number;
+    slowestEndpoints: Array<{ endpoint: string; averageTime: number }>;
+    errorEndpoints: Array<{ endpoint: string; errorCount: number }>;
+  } {
+    const responseTime = this.getAggregatedMetrics('api_response_time', timeWindowMinutes);
+    const totalRequests = this.getAggregatedMetrics('api_call', timeWindowMinutes);
+    const totalErrors = this.getAggregatedMetrics('api_error', timeWindowMinutes);
+
+    // Calculate requests per minute
+    const requestsPerMinute = totalRequests.count / timeWindowMinutes;
+    
+    // Calculate error rate
+    const errorRate = totalRequests.count > 0 ? (totalErrors.count / totalRequests.count) * 100 : 0;
+
+    return {
+      averageResponseTime: responseTime.average || 0,
+      errorRate,
+      requestsPerMinute,
+      slowestEndpoints: this.getSlowEndpoints(timeWindowMinutes),
+      errorEndpoints: this.getErrorEndpoints(timeWindowMinutes)
+    };
+  }
+
+  private getSlowEndpoints(timeWindowMinutes: number): Array<{ endpoint: string; averageTime: number }> {
+    const endpointTimes = new Map<string, number[]>();
+    const cutoffTime = new Date(Date.now() - timeWindowMinutes * 60 * 1000);
+    
+    const responseTimeMetrics = this.getMetrics('api_response_time').filter(m => 
+      m.timestamp && m.timestamp > cutoffTime
+    );
+
+    responseTimeMetrics.forEach(metric => {
+      if (metric.tags?.endpoint) {
+        if (!endpointTimes.has(metric.tags.endpoint)) {
+          endpointTimes.set(metric.tags.endpoint, []);
+        }
+        endpointTimes.get(metric.tags.endpoint)!.push(metric.value);
+      }
+    });
+
+    return Array.from(endpointTimes.entries())
+      .map(([endpoint, times]) => ({
+        endpoint,
+        averageTime: times.reduce((a, b) => a + b, 0) / times.length
+      }))
+      .sort((a, b) => b.averageTime - a.averageTime)
+      .slice(0, 5);
+  }
+
+  private getErrorEndpoints(timeWindowMinutes: number): Array<{ endpoint: string; errorCount: number }> {
+    const endpointErrors = new Map<string, number>();
+    const cutoffTime = new Date(Date.now() - timeWindowMinutes * 60 * 1000);
+    
+    const errorMetrics = this.getMetrics('api_error').filter(m => 
+      m.timestamp && m.timestamp > cutoffTime
+    );
+
+    errorMetrics.forEach(metric => {
+      if (metric.tags?.endpoint) {
+        const current = endpointErrors.get(metric.tags.endpoint) || 0;
+        endpointErrors.set(metric.tags.endpoint, current + 1);
+      }
+    });
+
+    return Array.from(endpointErrors.entries())
+      .map(([endpoint, errorCount]) => ({ endpoint, errorCount }))
+      .sort((a, b) => b.errorCount - a.errorCount)
+      .slice(0, 5);
+  }
+
+  // Alert system
+  checkAlerts(): Array<{ type: string; message: string; severity: 'low' | 'medium' | 'high' }> {
+    const alerts: Array<{ type: string; message: string; severity: 'low' | 'medium' | 'high' }> = [];
+    const insights = this.getPerformanceInsights(15); // Check last 15 minutes
+
+    // High error rate alert
+    if (insights.errorRate > 10) {
+      alerts.push({
+        type: 'high_error_rate',
+        message: `Error rate is ${insights.errorRate.toFixed(2)}% (threshold: 10%)`,
+        severity: insights.errorRate > 25 ? 'high' : 'medium'
+      });
+    }
+
+    // Slow response time alert
+    if (insights.averageResponseTime > 2000) {
+      alerts.push({
+        type: 'slow_response_time',
+        message: `Average response time is ${insights.averageResponseTime.toFixed(0)}ms (threshold: 2000ms)`,
+        severity: insights.averageResponseTime > 5000 ? 'high' : 'medium'
+      });
+    }
+
+    // Low request volume alert (might indicate service issues)
+    if (insights.requestsPerMinute < 0.1) {
+      alerts.push({
+        type: 'low_request_volume',
+        message: `Very low request volume: ${insights.requestsPerMinute.toFixed(2)} requests/minute`,
+        severity: 'medium'
+      });
+    }
+
+    // Health check alerts
+    for (const [name, healthCheck] of this.healthChecks.entries()) {
+      if (healthCheck.status === 'unhealthy') {
+        alerts.push({
+          type: 'health_check_failed',
+          message: `Health check '${name}' is unhealthy: ${healthCheck.message}`,
+          severity: 'high'
+        });
+      } else if (healthCheck.status === 'degraded') {
+        alerts.push({
+          type: 'health_check_degraded',
+          message: `Health check '${name}' is degraded: ${healthCheck.message}`,
+          severity: 'medium'
+        });
+      }
+    }
+
+    return alerts;
   }
 }
 

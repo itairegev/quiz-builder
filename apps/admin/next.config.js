@@ -1,15 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    appDir: true,
-  },
-  transpilePackages: [
-    '@shopify-quiz-builder/common',
-    '@shopify-quiz-builder/ui',
-    '@shopify-quiz-builder/database'
-  ],
   env: {
-    CUSTOM_KEY: process.env.CUSTOM_KEY,
+    CUSTOM_KEY: process.env.CUSTOM_KEY || 'default-key',
   },
   async headers() {
     return [
@@ -32,26 +24,8 @@ const nextConfig = {
       },
     ];
   },
-  async redirects() {
-    return [
-      {
-        source: '/',
-        destination: '/dashboard',
-        permanent: false,
-      },
-    ];
-  },
-  webpack: (config, { isServer }) => {
-    // Optimize bundle size
-    if (!isServer) {
-      config.resolve.fallback = {
-        ...config.resolve.fallback,
-        fs: false,
-        net: false,
-        tls: false,
-      };
-    }
 
+  webpack: (config, { isServer }) => {
     // Handle SVG imports
     config.module.rules.push({
       test: /\.svg$/,
