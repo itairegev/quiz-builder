@@ -1,0 +1,7 @@
+---
+alwaysApply: false
+description: keep changes to existing code minimal.
+globs: /
+
+---
+when adding new code which requires code changes to working code, make sure to only change previous code if you must, keep the changes only to the scope of the task, don't refactor previous code unless it is part of the plan.
