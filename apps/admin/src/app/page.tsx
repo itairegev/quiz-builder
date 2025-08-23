@@ -3,6 +3,7 @@
 import { Page, Layout, Card, Text, Badge } from '@shopify/polaris';
 import QuizPreview from '../components/QuizPreview';
 import ThemeManager from '../components/ThemeManager';
+import AnalyticsDashboard from '../components/AnalyticsDashboard';
 
 export default function DashboardPage() {
   return (
@@ -124,6 +125,10 @@ export default function DashboardPage() {
 
         <Layout.Section>
           <ThemeManager />
+        </Layout.Section>
+
+        <Layout.Section>
+          <AnalyticsDashboard />
         </Layout.Section>
       </Layout>
     </Page>
