@@ -107,8 +107,14 @@ const AnalyticsDashboard: React.FC = () => {
       } else {
         console.log('API returned status:', response.status, 'using mock data');
         
-        // Show fallback feedback
-        showUserFeedback(`⚠️ API not available (${response.status}), using demo data`, 'warning');
+        // Show fallback feedback based on status
+        if (response.status === 500) {
+          showUserFeedback('⚠️ Backend server error, using demo data', 'warning');
+        } else if (response.status === 401) {
+          showUserFeedback('⚠️ Authentication required, using demo data', 'warning');
+        } else {
+          showUserFeedback(`⚠️ API not available (${response.status}), using demo data`, 'warning');
+        }
         
         // Fallback to mock data if API is not ready
         await loadMockData();
