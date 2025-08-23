@@ -559,39 +559,7 @@ const AnalyticsDashboard: React.FC = () => {
   };
 
     return (
-    <>
-      <style>{`
-        @keyframes fadeInOut {
-          0%, 100% { opacity: 1; transform: scale(1); }
-          50% { opacity: 0.7; transform: scale(1.05); }
-        }
-        @keyframes slideInUp {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes pulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.6; }
-        }
-        .metric-card {
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-          animation: slideInUp 0.6s ease-out;
-        }
-        .metric-card:hover {
-          transform: translateY(-4px);
-          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-        }
-        .chart-bar {
-          transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .progress-bar {
-          transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .tab-content {
-          animation: slideInUp 0.4s ease-out;
-        }
-      `}</style>
-      <Card>
+    <Card>
         <div style={{ padding: '1.5rem' }}>
           {/* Debug: Show user feedback state */}
           <div style={{ 
@@ -717,9 +685,8 @@ const AnalyticsDashboard: React.FC = () => {
                   <div style={{ 
                     fontSize: '3rem', 
                     marginBottom: '1rem',
-                    animation: 'fadeInOut 2s ease-in-out infinite',
-                    transform: 'scale(1)',
-                    transition: 'transform 0.3s ease'
+                    opacity: 0.8,
+                    transition: 'opacity 0.3s ease'
                   }}>
                     📊
                   </div>
@@ -747,7 +714,7 @@ const AnalyticsDashboard: React.FC = () => {
                     marginBottom: '2rem'
                   }}>
                                         {/* Total Quizzes */}
-                    <div className="metric-card">
+                    <div>
                       <Card>
                         <div style={{ padding: '1rem' }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
@@ -1169,7 +1136,6 @@ const AnalyticsDashboard: React.FC = () => {
         </Tabs>
       </div>
     </Card>
-    </>
   );
 };
 
