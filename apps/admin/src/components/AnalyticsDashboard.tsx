@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Card, 
-  Text, 
   Tabs, 
   Button, 
-  ProgressBar, 
   Badge 
 } from '@shopify/polaris';
 
@@ -446,14 +444,14 @@ const AnalyticsDashboard: React.FC = () => {
 
     return (
       <div style={{ marginTop: '1rem' }}>
-        <Text variant="headingSm" as="h5">Device Usage Breakdown</Text>
+        <div variant="headingSm" as="h5">Device Usage Breakdown</div>
         
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           {/* Desktop */}
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-              <Text variant="bodyMd" as="span">Desktop</Text>
-              <Text variant="bodyMd" as="span">{deviceBreakdown.desktop.toFixed(1)}%</Text>
+              <div variant="bodyMd" as="span">Desktop</div>
+              <div variant="bodyMd" as="span">{deviceBreakdown.desktop.toFixed(1)}%</div>
             </div>
             <div style={{ 
               width: '100%', 
@@ -474,8 +472,8 @@ const AnalyticsDashboard: React.FC = () => {
           {/* Mobile */}
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-              <Text variant="bodyMd" as="span">Mobile</Text>
-              <Text variant="bodyMd" as="span">{deviceBreakdown.mobile.toFixed(1)}%</Text>
+              <div variant="bodyMd" as="span">Mobile</div>
+              <div variant="bodyMd" as="span">{deviceBreakdown.mobile.toFixed(1)}%</div>
             </div>
             <div style={{ 
               width: '100%', 
@@ -497,8 +495,8 @@ const AnalyticsDashboard: React.FC = () => {
           {/* Tablet */}
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-              <Text variant="bodyMd" as="span">Tablet</Text>
-              <Text variant="bodyMd" as="span">{deviceBreakdown.tablet.toFixed(1)}%</Text>
+              <div variant="bodyMd" as="span">Tablet</div>
+              <div variant="bodyMd" as="span">{deviceBreakdown.tablet.toFixed(1)}%</div>
             </div>
             <div style={{ 
               width: '100%', 
@@ -636,12 +634,12 @@ const AnalyticsDashboard: React.FC = () => {
               📊
             </div>
             <div>
-              <Text variant="headingMd" as="h3">
+              <div variant="headingMd" as="h3">
                 Analytics Dashboard
-              </Text>
-              <Text variant="bodyMd" as="p" tone="subdued">
+              </div>
+              <div variant="bodyMd" as="p" tone="subdued">
                 Track quiz performance and user engagement
-              </Text>
+              </div>
             </div>
           </div>
           
@@ -682,12 +680,12 @@ const AnalyticsDashboard: React.FC = () => {
           {activeTab === 'overview' && (
             <div className="tab-content" style={{ padding: '1rem 0' }}>
               <div style={{ marginBottom: '1.5rem' }}>
-                <Text variant="headingMd" as="h4">
+                <div variant="headingMd" as="h4">
                   Key Metrics
-                </Text>
-                <Text variant="bodySm" as="p" tone="subdued">
+                </div>
+                <div variant="bodySm" as="p" tone="subdued">
                   Overview of quiz performance and engagement
-                </Text>
+                </div>
               </div>
 
               {analyticsData.isLoading ? (
@@ -700,7 +698,7 @@ const AnalyticsDashboard: React.FC = () => {
                   }}>
                     📊
                   </div>
-                  <Text variant="bodyMd" as="p" tone="subdued">Loading analytics data...</Text>
+                  <div variant="bodyMd" as="p" tone="subdued">Loading analytics data...</div>
                   <div style={{ 
                     marginTop: '1rem',
                     padding: '0.5rem 1rem',
@@ -741,7 +739,7 @@ const AnalyticsDashboard: React.FC = () => {
                             }}>
                               📝
                             </div>
-                            <Text variant="headingSm" as="h5">Total Quizzes</Text>
+                            <div variant="headingSm" as="h5">Total Quizzes</div>
                           </div>
                           <div style={{ 
                             fontSize: '2rem', 
@@ -751,9 +749,9 @@ const AnalyticsDashboard: React.FC = () => {
                           }}>
                             {formatNumber(analyticsData.totalQuizzes)}
                           </div>
-                          <Text variant="bodySm" as="p" tone="subdued">
+                          <div variant="bodySm" as="p" tone="subdued">
                             Active quizzes in the system
-                          </Text>
+                          </div>
                         </div>
                       </Card>
                     </div>
@@ -775,7 +773,7 @@ const AnalyticsDashboard: React.FC = () => {
                           }}>
                             👥
                           </div>
-                          <Text variant="headingSm" as="h5">Total Submissions</Text>
+                          <div variant="headingSm" as="h5">Total Submissions</div>
                         </div>
                         <div style={{ 
                           fontSize: '2rem', 
@@ -785,9 +783,9 @@ const AnalyticsDashboard: React.FC = () => {
                         }}>
                           {formatNumber(analyticsData.totalSubmissions)}
                         </div>
-                        <Text variant="bodySm" as="p" tone="subdued">
+                        <div variant="bodySm" as="p" tone="subdued">
                           Quiz attempts this period
-                        </Text>
+                        </div>
                       </div>
                     </Card>
 
@@ -808,7 +806,7 @@ const AnalyticsDashboard: React.FC = () => {
                           }}>
                             📈
                           </div>
-                          <Text variant="headingSm" as="h5">Completion Rate</Text>
+                          <div variant="headingSm" as="h5">Completion Rate</div>
                         </div>
                         <div style={{ 
                           fontSize: '2rem', 
@@ -818,9 +816,9 @@ const AnalyticsDashboard: React.FC = () => {
                         }}>
                           {formatPercentage(analyticsData.averageCompletionRate)}
                         </div>
-                        <Text variant="bodySm" as="p" tone="subdued">
+                        <div variant="bodySm" as="p" tone="subdued">
                           Average quiz completion rate
-                        </Text>
+                        </div>
                       </div>
                     </Card>
 
@@ -841,7 +839,7 @@ const AnalyticsDashboard: React.FC = () => {
                           }}>
                             ⏱️
                           </div>
-                          <Text variant="headingSm" as="h5">Avg. Time</Text>
+                          <div variant="headingSm" as="h5">Avg. Time</div>
                         </div>
                         <div style={{ 
                           fontSize: '2rem', 
@@ -851,9 +849,9 @@ const AnalyticsDashboard: React.FC = () => {
                         }}>
                           {formatTime(analyticsData.averageTimeToComplete)}
                         </div>
-                        <Text variant="bodySm" as="p" tone="subdued">
+                        <div variant="bodySm" as="p" tone="subdued">
                           Time to complete quizzes
-                        </Text>
+                        </div>
                       </div>
                     </Card>
                   </div>
@@ -871,12 +869,12 @@ const AnalyticsDashboard: React.FC = () => {
                       <div style={{ padding: '1rem' }}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                           <div>
-                            <Text variant="headingSm" as="h5">
+                            <div variant="headingSm" as="h5">
                               {analyticsData.topPerformingQuiz}
-                            </Text>
-                            <Text variant="bodySm" as="p" tone="subdued">
+                            </div>
+                            <div variant="bodySm" as="p" tone="subdued">
                               Highest completion rate and engagement
-                            </Text>
+                            </div>
                           </div>
                           <Badge tone="success">Top Performer</Badge>
                         </div>
@@ -905,17 +903,17 @@ const AnalyticsDashboard: React.FC = () => {
                               borderBottom: index < analyticsData.recentActivity.length - 1 ? '1px solid #e5e7eb' : 'none'
                             }}>
                               <div>
-                                <Text variant="bodyMd" as="p" fontWeight="semibold">
+                                <div variant="bodyMd" as="p" fontWeight="semibold">
                                   {activity.quiz}
-                                </Text>
-                                <Text variant="bodySm" as="p" tone="subdued">
+                                </div>
+                                <div variant="bodySm" as="p" tone="subdued">
                                   {activity.date} • {activity.submissions} submissions
-                                </Text>
+                                </div>
                               </div>
                               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                <Text variant="bodyMd" as="p">
+                                <div variant="bodyMd" as="p">
                                   {formatPercentage(activity.completionRate)}
-                                </Text>
+                                </div>
                                 <div style={{
                                   width: '100px',
                                   height: '8px',
@@ -946,18 +944,18 @@ const AnalyticsDashboard: React.FC = () => {
           {activeTab === 'performance' && (
             <div style={{ padding: '1rem 0' }}>
               <div style={{ marginBottom: '1.5rem' }}>
-                <Text variant="headingMd" as="h4">
+                <div variant="headingMd" as="h4">
                   Performance Analytics
-                </Text>
-                <Text variant="bodySm" as="p" tone="subdued">
+                </div>
+                <div variant="bodySm" as="p" tone="subdued">
                   Detailed performance metrics and trends over time
-                </Text>
+                </div>
               </div>
 
               <div style={{ padding: '1rem' }}>
                 {analyticsData.isLoading ? (
                   <div style={{ textAlign: 'center', padding: '2rem' }}>
-                    <Text variant="bodyMd" as="p" tone="subdued">Loading performance data...</Text>
+                    <div variant="bodyMd" as="p" tone="subdued">Loading performance data...</div>
                   </div>
                 ) : (
                   <div>
@@ -978,31 +976,31 @@ const AnalyticsDashboard: React.FC = () => {
                           }}>
                             {analyticsData.performanceTrends.length}
                           </div>
-                          <Text variant="bodySm" as="p" tone="subdued">
+                          <div variant="bodySm" as="p" tone="subdued">
                             Days Tracked
-                          </Text>
+                          </div>
                         </div>
                       </Card>
                       
                       <Card>
                         <div style={{ padding: '1rem', textAlign: 'center' }}>
-                          <Text variant="headingLg" as="h3" style={{ color: '#10b981' }}>
+                          <div variant="headingLg" as="h3" style={{ color: '#10b981' }}>
                             {Math.round(analyticsData.performanceTrends.reduce((sum, t) => sum + t.submissions, 0) / analyticsData.performanceTrends.length)}
-                          </Text>
-                          <Text variant="bodySm" as="p" tone="subdued">
+                          </div>
+                          <div variant="bodySm" as="p" tone="subdued">
                             Avg. Daily Submissions
-                          </Text>
+                          </div>
                         </div>
                       </Card>
                       
                       <Card>
                         <div style={{ padding: '1rem', textAlign: 'center' }}>
-                          <Text variant="headingLg" as="h3" style={{ color: '#f59e0b' }}>
+                          <div variant="headingLg" as="h3" style={{ color: '#f59e0b' }}>
                             {Math.round(analyticsData.performanceTrends.reduce((sum, t) => sum + t.completionRate, 0) / analyticsData.performanceTrends.length)}%
-                          </Text>
-                          <Text variant="bodySm" as="p" tone="subdued">
+                          </div>
+                          <div variant="bodySm" as="p" tone="subdued">
                             Avg. Completion Rate
-                          </Text>
+                          </div>
                         </div>
                       </Card>
                     </div>
@@ -1023,18 +1021,18 @@ const AnalyticsDashboard: React.FC = () => {
           {activeTab === 'engagement' && (
             <div style={{ padding: '1rem 0' }}>
               <div style={{ marginBottom: '1.5rem' }}>
-                <Text variant="headingMd" as="h4">
+                <div variant="headingMd" as="h4">
                   User Engagement
-                </Text>
-                <Text variant="bodySm" as="p" tone="subdued">
+                </div>
+                <div variant="bodySm" as="p" tone="subdued">
                   Track user behavior and engagement patterns
-                </Text>
+                </div>
               </div>
 
               <div style={{ padding: '1rem' }}>
                 {analyticsData.isLoading ? (
                   <div style={{ textAlign: 'center', padding: '2rem' }}>
-                    <Text variant="bodyMd" as="p" tone="subdued">Loading engagement data...</Text>
+                    <div variant="bodyMd" as="p" tone="subdued">Loading engagement data...</div>
                   </div>
                 ) : (
                   <div>
@@ -1047,34 +1045,34 @@ const AnalyticsDashboard: React.FC = () => {
                     }}>
                       <Card>
                         <div style={{ padding: '1rem', textAlign: 'center' }}>
-                          <Text variant="headingLg" as="h3" style={{ color: '#3b82f6' }}>
+                          <div variant="headingLg" as="h3" style={{ color: '#3b82f6' }}>
                             {analyticsData.engagementMetrics.averageSessionDuration?.toFixed(1) || '0'} min
-                          </Text>
-                          <Text variant="bodySm" as="p" tone="subdued">
+                          </div>
+                          <div variant="bodySm" as="p" tone="subdued">
                             Avg. Session Duration
-                          </Text>
+                          </div>
                         </div>
                       </Card>
                       
                       <Card>
                         <div style={{ padding: '1rem', textAlign: 'center' }}>
-                          <Text variant="headingLg" as="h3" style={{ color: '#ef4444' }}>
+                          <div variant="headingLg" as="h3" style={{ color: '#ef4444' }}>
                             {analyticsData.engagementMetrics.bounceRate?.toFixed(1) || '0'}%
-                          </Text>
-                          <Text variant="bodySm" as="p" tone="subdued">
+                          </div>
+                          <div variant="bodySm" as="p" tone="subdued">
                             Bounce Rate
-                          </Text>
+                          </div>
                         </div>
                       </Card>
                       
                       <Card>
                         <div style={{ padding: '1rem', textAlign: 'center' }}>
-                          <Text variant="headingLg" as="h3" style={{ color: '#10b981' }}>
+                          <div variant="headingLg" as="h3" style={{ color: '#10b981' }}>
                             {analyticsData.engagementMetrics.returnUserRate?.toFixed(1) || '0'}%
-                          </Text>
-                          <Text variant="bodySm" as="p" tone="subdued">
+                          </div>
+                          <div variant="bodySm" as="p" tone="subdued">
                             Return User Rate
-                          </Text>
+                          </div>
                         </div>
                       </Card>
                     </div>
@@ -1095,26 +1093,26 @@ const AnalyticsDashboard: React.FC = () => {
           {activeTab === 'reports' && (
             <div style={{ padding: '1rem 0' }}>
               <div style={{ marginBottom: '1.5rem' }}>
-                <Text variant="headingMd" as="h4">
+                <div variant="headingMd" as="h4">
                   Reports & Export
-                </Text>
-                <Text variant="bodySm" as="p" tone="subdued">
+                </div>
+                <div variant="bodySm" as="p" tone="subdued">
                   Generate and export detailed reports
-                </Text>
+                </div>
               </div>
 
               <div style={{ padding: '1rem' }}>
                 {analyticsData.isLoading ? (
                   <div style={{ textAlign: 'center', padding: '2rem' }}>
-                    <Text variant="bodyMd" as="p" tone="subdued">Loading report options...</Text>
+                    <div variant="bodyMd" as="p" tone="subdued">Loading report options...</div>
                   </div>
                 ) : (
                   <div>
                     {/* Report Generation */}
                     <div style={{ marginBottom: '2rem' }}>
-                      <Text variant="headingSm" as="h5" style={{ marginBottom: '1rem' }}>
+                      <div variant="headingSm" as="h5" style={{ marginBottom: '1rem' }}>
                         Generate Reports
-                      </Text>
+                      </div>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                         <Button 
                           size="large"
@@ -1139,9 +1137,9 @@ const AnalyticsDashboard: React.FC = () => {
 
                     {/* Data Export */}
                     <div style={{ marginBottom: '2rem' }}>
-                      <Text variant="headingSm" as="h5" style={{ marginBottom: '1rem' }}>
+                      <div variant="headingSm" as="h5" style={{ marginBottom: '1rem' }}>
                         Export Data
-                      </Text>
+                      </div>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                         <Button 
                           size="large"
@@ -1157,9 +1155,9 @@ const AnalyticsDashboard: React.FC = () => {
 
                     {/* Report Scheduling */}
                     <div>
-                      <Text variant="headingSm" as="h5" style={{ marginBottom: '1rem' }}>
+                      <div variant="headingSm" as="h5" style={{ marginBottom: '1rem' }}>
                         Schedule Reports
-                      </Text>
+                      </div>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                         <Button 
                           size="large"
