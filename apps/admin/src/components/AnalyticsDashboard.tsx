@@ -84,7 +84,15 @@ const AnalyticsDashboard: React.FC = () => {
     setIsLoading(true);
     try {
       // Real API call (will be implemented when backend is ready)
-      const response = await fetch(`/api/analytics?timeRange=${timeRange}`);
+      console.log('Attempting to load analytics from API for time range:', timeRange);
+      
+      // Try to fetch from the API endpoint
+      const response = await fetch(`/api/analytics?timeRange=${timeRange}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
       
       if (response.ok) {
         const data = await response.json();
@@ -93,16 +101,40 @@ const AnalyticsDashboard: React.FC = () => {
           isLoading: false
         });
         console.log('Analytics data loaded from API:', data);
+        
+        // Show success feedback
+        showUserFeedback('✅ Data loaded successfully from API', 'success');
       } else {
+        console.log('API returned status:', response.status, 'using mock data');
+        
+        // Show fallback feedback
+        showUserFeedback(`⚠️ API not available (${response.status}), using demo data`, 'warning');
+        
         // Fallback to mock data if API is not ready
         await loadMockData();
       }
     } catch (error) {
       console.error('Failed to load analytics from API, using mock data:', error);
+      
+      // Show error feedback
+      showUserFeedback('❌ Network error, using demo data', 'error');
+      
       await loadMockData();
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // User feedback system
+  const [userFeedback, setUserFeedback] = useState<{ message: string; type: 'success' | 'warning' | 'error' } | null>(null);
+
+  const showUserFeedback = (message: string, type: 'success' | 'warning' | 'error') => {
+    console.log('Setting user feedback:', { message, type });
+    setUserFeedback({ message, type });
+    setTimeout(() => {
+      console.log('Clearing user feedback');
+      setUserFeedback(null);
+    }, 5000); // Auto-hide after 5 seconds
   };
 
   // Load mock data as fallback
@@ -110,41 +142,154 @@ const AnalyticsDashboard: React.FC = () => {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 500));
     
-    const mockData: AnalyticsData = {
-      totalQuizzes: 24,
-      totalSubmissions: 1247,
-      averageCompletionRate: 78.5,
-      averageTimeToComplete: 4.2,
-      topPerformingQuiz: 'Product Knowledge Test',
-      recentActivity: [
-        { quiz: 'Brand Awareness Quiz', submissions: 45, completionRate: 82.3, date: '2025-08-23' },
-        { quiz: 'Customer Satisfaction', submissions: 38, completionRate: 76.1, date: '2025-08-22' },
-        { quiz: 'Product Knowledge Test', submissions: 52, completionRate: 89.7, date: '2025-08-21' },
-      ],
-      performanceTrends: [
-        { date: '2025-08-17', submissions: 23, completionRate: 75.2 },
-        { date: '2025-08-18', submissions: 31, completionRate: 78.9 },
-        { date: '2025-08-19', submissions: 28, completionRate: 76.4 },
-        { date: '2025-08-20', submissions: 35, completionRate: 79.1 },
-        { date: '2025-08-21', submissions: 42, completionRate: 81.7 },
-        { date: '2025-08-22', submissions: 38, completionRate: 77.3 },
-        { date: '2025-08-23', submissions: 45, completionRate: 82.3 },
-      ],
-      engagementMetrics: {
-        averageSessionDuration: 3.8,
-        bounceRate: 22.4,
-        returnUserRate: 34.7,
-        deviceBreakdown: {
-          desktop: 58.3,
-          mobile: 35.2,
-          tablet: 6.5
-        }
-      },
-      isLoading: false
+    // Generate different mock data based on time range
+    const getMockDataForTimeRange = (range: string): AnalyticsData => {
+      const baseData = {
+        totalQuizzes: 24,
+        topPerformingQuiz: 'Product Knowledge Test',
+        isLoading: false
+      };
+
+      switch (range) {
+        case '7d':
+          return {
+            ...baseData,
+            totalSubmissions: 1247,
+            averageCompletionRate: 78.5,
+            averageTimeToComplete: 4.2,
+            recentActivity: [
+              { quiz: 'Brand Awareness Quiz', submissions: 45, completionRate: 82.3, date: '2025-08-23' },
+              { quiz: 'Customer Satisfaction', submissions: 38, completionRate: 76.1, date: '2025-08-22' },
+              { quiz: 'Product Knowledge Test', submissions: 52, completionRate: 89.7, date: '2025-08-21' },
+            ],
+            performanceTrends: [
+              { date: '2025-08-17', submissions: 23, completionRate: 75.2 },
+              { date: '2025-08-18', submissions: 31, completionRate: 78.9 },
+              { date: '2025-08-19', submissions: 28, completionRate: 76.4 },
+              { date: '2025-08-20', submissions: 35, completionRate: 79.1 },
+              { date: '2025-08-21', submissions: 42, completionRate: 81.7 },
+              { date: '2025-08-22', submissions: 38, completionRate: 77.3 },
+              { date: '2025-08-23', submissions: 45, completionRate: 82.3 },
+            ],
+            engagementMetrics: {
+              averageSessionDuration: 3.8,
+              bounceRate: 22.4,
+              returnUserRate: 34.7,
+              deviceBreakdown: { desktop: 58.3, mobile: 35.2, tablet: 6.5 }
+            }
+          };
+        
+        case '30d':
+          return {
+            ...baseData,
+            totalSubmissions: 5234,
+            averageCompletionRate: 81.2,
+            averageTimeToComplete: 3.9,
+            recentActivity: [
+              { quiz: 'Product Knowledge Test', submissions: 156, completionRate: 89.7, date: '2025-08-23' },
+              { quiz: 'Brand Awareness Quiz', submissions: 142, completionRate: 82.3, date: '2025-08-22' },
+              { quiz: 'Customer Satisfaction', submissions: 138, completionRate: 76.1, date: '2025-08-21' },
+            ],
+            performanceTrends: [
+              { date: '2025-07-24', submissions: 89, completionRate: 78.2 },
+              { date: '2025-07-31', submissions: 156, completionRate: 81.9 },
+              { date: '2025-08-07', submissions: 234, completionRate: 83.4 },
+              { date: '2025-08-14', submissions: 198, completionRate: 79.1 },
+              { date: '2025-08-21', submissions: 342, completionRate: 81.7 },
+            ],
+            engagementMetrics: {
+              averageSessionDuration: 4.1,
+              bounceRate: 19.8,
+              returnUserRate: 41.2,
+              deviceBreakdown: { desktop: 62.1, mobile: 32.8, tablet: 5.1 }
+            }
+          };
+        
+        case '90d':
+          return {
+            ...baseData,
+            totalSubmissions: 15467,
+            averageCompletionRate: 83.7,
+            averageTimeToComplete: 3.6,
+            recentActivity: [
+              { quiz: 'Product Knowledge Test', submissions: 456, completionRate: 89.7, date: '2025-08-23' },
+              { quiz: 'Brand Awareness Quiz', submissions: 423, completionRate: 82.3, date: '2025-08-22' },
+              { quiz: 'Customer Satisfaction', submissions: 398, completionRate: 76.1, date: '2025-08-21' },
+            ],
+            performanceTrends: [
+              { date: '2025-05-25', submissions: 234, completionRate: 79.2 },
+              { date: '2025-06-15', submissions: 456, completionRate: 82.9 },
+              { date: '2025-07-05', submissions: 678, completionRate: 85.4 },
+              { date: '2025-07-25', submissions: 598, completionRate: 81.1 },
+              { date: '2025-08-15', submissions: 842, completionRate: 87.7 },
+            ],
+            engagementMetrics: {
+              averageSessionDuration: 4.5,
+              bounceRate: 17.3,
+              returnUserRate: 48.7,
+              deviceBreakdown: { desktop: 65.8, mobile: 30.1, tablet: 4.1 }
+            }
+          };
+        
+        case '1y':
+          return {
+            ...baseData,
+            totalSubmissions: 45678,
+            averageCompletionRate: 85.2,
+            averageTimeToComplete: 3.4,
+            recentActivity: [
+              { quiz: 'Product Knowledge Test', submissions: 1234, completionRate: 89.7, date: '2025-08-23' },
+              { quiz: 'Brand Awareness Quiz', submissions: 1156, completionRate: 82.3, date: '2025-08-22' },
+              { quiz: 'Customer Satisfaction', submissions: 1098, completionRate: 76.1, date: '2025-08-21' },
+            ],
+            performanceTrends: [
+              { date: '2024-08-23', submissions: 567, completionRate: 78.2 },
+              { date: '2024-11-23', submissions: 1234, completionRate: 81.9 },
+              { date: '2025-02-23', submissions: 2345, completionRate: 83.4 },
+              { date: '2025-05-23', submissions: 3456, completionRate: 81.1 },
+              { date: '2025-08-23', submissions: 4567, completionRate: 87.7 },
+            ],
+            engagementMetrics: {
+              averageSessionDuration: 4.8,
+              bounceRate: 15.6,
+              returnUserRate: 52.3,
+              deviceBreakdown: { desktop: 68.9, mobile: 27.8, tablet: 3.3 }
+            }
+          };
+        
+        default:
+          return {
+            ...baseData,
+            totalSubmissions: 1247,
+            averageCompletionRate: 78.5,
+            averageTimeToComplete: 4.2,
+            recentActivity: [
+              { quiz: 'Brand Awareness Quiz', submissions: 45, completionRate: 82.3, date: '2025-08-23' },
+              { quiz: 'Customer Satisfaction', submissions: 38, completionRate: 76.1, date: '2025-08-22' },
+              { quiz: 'Product Knowledge Test', submissions: 52, completionRate: 89.7, date: '2025-08-21' },
+            ],
+            performanceTrends: [
+              { date: '2025-08-17', submissions: 23, completionRate: 75.2 },
+              { date: '2025-08-18', submissions: 31, completionRate: 78.9 },
+              { date: '2025-08-19', submissions: 28, completionRate: 76.4 },
+              { date: '2025-08-20', submissions: 35, completionRate: 79.1 },
+              { date: '2025-08-21', submissions: 42, completionRate: 81.7 },
+              { date: '2025-08-22', submissions: 38, completionRate: 77.3 },
+              { date: '2025-08-23', submissions: 45, completionRate: 82.3 },
+            ],
+            engagementMetrics: {
+              averageSessionDuration: 3.8,
+              bounceRate: 22.4,
+              returnUserRate: 34.7,
+              deviceBreakdown: { desktop: 58.3, mobile: 35.2, tablet: 6.5 }
+            }
+          };
+      }
     };
     
+    const mockData = getMockDataForTimeRange(timeRange);
     setAnalyticsData(mockData);
-    console.log('Mock analytics data loaded');
+    console.log(`Mock analytics data loaded for ${timeRange} time range:`, mockData);
   };
 
   // Load data when component mounts or time range changes
@@ -193,7 +338,7 @@ const AnalyticsDashboard: React.FC = () => {
               borderBottom: '1px solid #e5e7eb'
             }}>
               {analyticsData.performanceTrends.map((trend, index) => (
-                <div key={index} style={{ 
+                <div key={index} className="chart-bar" style={{ 
                   flex: 1,
                   backgroundColor: '#3b82f6',
                   height: `${(trend.submissions / maxSubmissions) * 100}%`,
@@ -291,7 +436,7 @@ const AnalyticsDashboard: React.FC = () => {
 
     return (
       <div style={{ marginTop: '1rem' }}>
-        <Text variant="headingSm" as="h5" style={{ marginBottom: '1rem' }}>Device Usage Breakdown</Text>
+        <Text variant="headingSm" as="h5">Device Usage Breakdown</Text>
         
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           {/* Desktop */}
@@ -300,11 +445,20 @@ const AnalyticsDashboard: React.FC = () => {
               <Text variant="bodyMd" as="span">Desktop</Text>
               <Text variant="bodyMd" as="span">{deviceBreakdown.desktop.toFixed(1)}%</Text>
             </div>
-            <ProgressBar 
-              progress={deviceBreakdown.desktop / 100} 
-              color="success"
-              size="small"
-            />
+            <div style={{ 
+              width: '100%', 
+              height: '8px', 
+              backgroundColor: '#e5e7eb', 
+              borderRadius: '4px',
+              overflow: 'hidden'
+            }}>
+              <div className="progress-bar" style={{ 
+                width: `${deviceBreakdown.desktop}%`, 
+                height: '100%', 
+                backgroundColor: '#10b981',
+                borderRadius: '4px'
+              }} />
+            </div>
           </div>
 
           {/* Mobile */}
@@ -313,11 +467,21 @@ const AnalyticsDashboard: React.FC = () => {
               <Text variant="bodyMd" as="span">Mobile</Text>
               <Text variant="bodyMd" as="span">{deviceBreakdown.mobile.toFixed(1)}%</Text>
             </div>
-            <ProgressBar 
-              progress={deviceBreakdown.mobile / 100} 
-              color="primary"
-              size="small"
-            />
+            <div style={{ 
+              width: '100%', 
+              height: '8px', 
+              backgroundColor: '#e5e7eb', 
+              borderRadius: '4px',
+              overflow: 'hidden'
+            }}>
+              <div style={{ 
+                width: `${deviceBreakdown.mobile}%`, 
+                height: '100%', 
+                backgroundColor: '#3b82f6',
+                borderRadius: '4px',
+                transition: 'width 0.3s ease'
+              }} />
+            </div>
           </div>
 
           {/* Tablet */}
@@ -326,11 +490,21 @@ const AnalyticsDashboard: React.FC = () => {
               <Text variant="bodyMd" as="span">Tablet</Text>
               <Text variant="bodyMd" as="span">{deviceBreakdown.tablet.toFixed(1)}%</Text>
             </div>
-            <ProgressBar 
-              progress={deviceBreakdown.tablet / 100} 
-              color="warning"
-              size="small"
-            />
+            <div style={{ 
+              width: '100%', 
+              height: '8px', 
+              backgroundColor: '#e5e7eb', 
+              borderRadius: '4px',
+              overflow: 'hidden'
+            }}>
+              <div style={{ 
+                width: `${deviceBreakdown.tablet}%`, 
+                height: '100%', 
+                backgroundColor: '#f59e0b',
+                borderRadius: '4px',
+                transition: 'width 0.3s ease'
+              }} />
+            </div>
           </div>
         </div>
       </div>
@@ -384,9 +558,88 @@ const AnalyticsDashboard: React.FC = () => {
     }
   };
 
-  return (
-    <Card>
-      <div style={{ padding: '1.5rem' }}>
+    return (
+    <>
+      <style>{`
+        @keyframes fadeInOut {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.7; transform: scale(1.05); }
+        }
+        @keyframes slideInUp {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.6; }
+        }
+        .metric-card {
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          animation: slideInUp 0.6s ease-out;
+        }
+        .metric-card:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        .chart-bar {
+          transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .progress-bar {
+          transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .tab-content {
+          animation: slideInUp 0.4s ease-out;
+        }
+      `}</style>
+      <Card>
+        <div style={{ padding: '1.5rem' }}>
+          {/* Debug: Show user feedback state */}
+          <div style={{ 
+            padding: '0.5rem', 
+            backgroundColor: '#f3f4f6', 
+            borderRadius: '4px', 
+            fontSize: '12px', 
+            color: '#6b7280',
+            marginBottom: '1rem'
+          }}>
+            Debug: userFeedback = {userFeedback ? JSON.stringify(userFeedback) : 'null'}
+          </div>
+
+        {/* User Feedback */}
+        {userFeedback && (
+          <div style={{
+            padding: '0.75rem 1rem',
+            marginBottom: '1rem',
+            borderRadius: '6px',
+            fontSize: '14px',
+            fontWeight: '500',
+            backgroundColor: userFeedback.type === 'success' ? '#d1fae5' : 
+                           userFeedback.type === 'warning' ? '#fef3c7' : '#fee2e2',
+            color: userFeedback.type === 'success' ? '#065f46' : 
+                   userFeedback.type === 'warning' ? '#92400e' : '#991b1b',
+            border: `1px solid ${userFeedback.type === 'success' ? '#a7f3d0' : 
+                                userFeedback.type === 'warning' ? '#fde68a' : '#fecaca'}`,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between'
+          }}>
+            <span>{userFeedback.message}</span>
+            <button 
+              onClick={() => setUserFeedback(null)}
+              style={{
+                background: 'none',
+                border: 'none',
+                fontSize: '18px',
+                cursor: 'pointer',
+                color: 'inherit',
+                padding: '0'
+              }}
+            >
+              ×
+            </button>
+          </div>
+        )}
+
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -443,13 +696,13 @@ const AnalyticsDashboard: React.FC = () => {
         </div>
 
         {/* Tabs */}
-        <Tabs tabs={tabs} selected={0} onSelect={(selectedTabIndex) => {
+        <Tabs tabs={tabs} selected={tabs.findIndex(tab => tab.id === activeTab)} onSelect={(selectedTabIndex) => {
           const tabIds = ['overview', 'performance', 'engagement', 'reports'];
           setActiveTab(tabIds[selectedTabIndex]);
         }}>
           {/* Overview Tab */}
           {activeTab === 'overview' && (
-            <div style={{ padding: '1rem 0' }}>
+            <div className="tab-content" style={{ padding: '1rem 0' }}>
               <div style={{ marginBottom: '1.5rem' }}>
                 <Text variant="headingMd" as="h4">
                   Key Metrics
@@ -461,7 +714,28 @@ const AnalyticsDashboard: React.FC = () => {
 
               {analyticsData.isLoading ? (
                 <div style={{ textAlign: 'center', padding: '2rem' }}>
+                  <div style={{ 
+                    fontSize: '3rem', 
+                    marginBottom: '1rem',
+                    animation: 'fadeInOut 2s ease-in-out infinite',
+                    transform: 'scale(1)',
+                    transition: 'transform 0.3s ease'
+                  }}>
+                    📊
+                  </div>
                   <Text variant="bodyMd" as="p" tone="subdued">Loading analytics data...</Text>
+                  <div style={{ 
+                    marginTop: '1rem',
+                    padding: '0.5rem 1rem',
+                    backgroundColor: '#f3f4f6',
+                    borderRadius: '4px',
+                    fontSize: '14px',
+                    color: '#6b7280'
+                  }}>
+                    Fetching data for {timeRange === '7d' ? 'last 7 days' : 
+                                   timeRange === '30d' ? 'last 30 days' : 
+                                   timeRange === '90d' ? 'last 90 days' : 'last year'}
+                  </div>
                 </div>
               ) : (
                 <div>
@@ -472,33 +746,40 @@ const AnalyticsDashboard: React.FC = () => {
                     gap: '1rem',
                     marginBottom: '2rem'
                   }}>
-                    {/* Total Quizzes */}
-                    <Card>
-                      <div style={{ padding: '1rem' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                          <div style={{
-                            width: '24px',
-                            height: '24px',
-                            backgroundColor: '#3b82f6',
-                            borderRadius: '50%',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            color: 'white',
-                            fontSize: '12px'
-                          }}>
-                            📝
+                                        {/* Total Quizzes */}
+                    <div className="metric-card">
+                      <Card>
+                        <div style={{ padding: '1rem' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                            <div style={{
+                              width: '24px',
+                              height: '24px',
+                              backgroundColor: '#3b82f6',
+                              borderRadius: '50%',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              color: 'white',
+                              fontSize: '12px'
+                            }}>
+                              📝
+                            </div>
+                            <Text variant="headingSm" as="h5">Total Quizzes</Text>
                           </div>
-                          <Text variant="headingSm" as="h5">Total Quizzes</Text>
+                          <div style={{ 
+                            fontSize: '2rem', 
+                            fontWeight: 'bold', 
+                            color: '#3b82f6',
+                            margin: '0.5rem 0'
+                          }}>
+                            {formatNumber(analyticsData.totalQuizzes)}
+                          </div>
+                          <Text variant="bodySm" as="p" tone="subdued">
+                            Active quizzes in the system
+                          </Text>
                         </div>
-                        <Text variant="headingLg" as="h2" style={{ color: '#3b82f6' }}>
-                          {formatNumber(analyticsData.totalQuizzes)}
-                        </Text>
-                        <Text variant="bodySm" as="p" tone="subdued">
-                          Active quizzes in the system
-                        </Text>
-                      </div>
-                    </Card>
+                      </Card>
+                    </div>
 
                     {/* Total Submissions */}
                     <Card>
@@ -850,22 +1131,13 @@ const AnalyticsDashboard: React.FC = () => {
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                         <Button 
                           size="large"
-                          onClick={() => exportData('csv')}
-                        >
-                          📥 Export Analytics CSV
-                        </Button>
-                        <Button 
-                          size="large"
                           onClick={() => exportData('json')}
                         >
-                          📄 Export Analytics JSON
+                          📄 Export Analytics JSON (Working)
                         </Button>
-                        <Button 
-                          size="large"
-                          onClick={() => exportData('pdf')}
-                        >
-                          📑 Export Analytics PDF
-                        </Button>
+                        <div style={{ padding: '0.5rem', backgroundColor: '#f3f4f6', borderRadius: '4px', fontSize: '14px', color: '#6b7280' }}>
+                          💡 CSV and PDF export will be implemented when backend is ready
+                        </div>
                       </div>
                     </div>
 
@@ -897,6 +1169,7 @@ const AnalyticsDashboard: React.FC = () => {
         </Tabs>
       </div>
     </Card>
+    </>
   );
 };
 
