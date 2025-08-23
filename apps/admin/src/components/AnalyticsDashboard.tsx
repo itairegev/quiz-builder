@@ -332,8 +332,8 @@ const AnalyticsDashboard: React.FC = () => {
     return (
       <div style={{ marginTop: '1rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
-          <Text variant="headingSm" as="h5">Submissions Trend</Text>
-          <Text variant="headingSm" as="h5">Completion Rate Trend</Text>
+          <div style={{ fontSize: '0.875rem', fontWeight: '500' }}>Submissions Trend</div>
+          <div style={{ fontSize: '0.875rem', fontWeight: '500' }}>Completion Rate Trend</div>
         </div>
         
         <div style={{ display: 'flex', gap: '2rem' }}>
