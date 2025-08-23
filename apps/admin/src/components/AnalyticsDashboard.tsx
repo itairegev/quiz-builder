@@ -860,9 +860,13 @@ const AnalyticsDashboard: React.FC = () => {
 
                   {/* Top Performing Quiz */}
                   <div style={{ marginBottom: '1.5rem' }}>
-                    <Text variant="headingMd" as="h4" style={{ marginBottom: '1rem' }}>
+                    <div style={{ 
+                      fontSize: '1.25rem', 
+                      fontWeight: '600', 
+                      marginBottom: '1rem' 
+                    }}>
                       Top Performing Quiz
-                    </Text>
+                    </div>
                     <Card>
                       <div style={{ padding: '1rem' }}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -882,9 +886,13 @@ const AnalyticsDashboard: React.FC = () => {
 
                   {/* Recent Activity */}
                   <div>
-                    <Text variant="headingMd" as="h4" style={{ marginBottom: '1rem' }}>
+                    <div style={{ 
+                      fontSize: '1.25rem', 
+                      fontWeight: '600', 
+                      marginBottom: '1rem' 
+                    }}>
                       Recent Activity
-                    </Text>
+                    </div>
                     <Card>
                       <div style={{ padding: '1rem' }}>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
@@ -908,11 +916,20 @@ const AnalyticsDashboard: React.FC = () => {
                                 <Text variant="bodyMd" as="p">
                                   {formatPercentage(activity.completionRate)}
                                 </Text>
-                                <ProgressBar 
-                                  progress={activity.completionRate / 100} 
-                                  size="small"
-                                  color="success"
-                                />
+                                <div style={{
+                                  width: '100px',
+                                  height: '8px',
+                                  backgroundColor: '#e5e7eb',
+                                  borderRadius: '4px',
+                                  overflow: 'hidden'
+                                }}>
+                                  <div style={{
+                                    width: `${activity.completionRate}%`,
+                                    height: '100%',
+                                    backgroundColor: '#10b981',
+                                    transition: 'width 0.3s ease'
+                                  }} />
+                                </div>
                               </div>
                             </div>
                           ))}
@@ -953,9 +970,14 @@ const AnalyticsDashboard: React.FC = () => {
                     }}>
                       <Card>
                         <div style={{ padding: '1rem', textAlign: 'center' }}>
-                          <Text variant="headingLg" as="h3" style={{ color: '#3b82f6' }}>
+                          <div style={{ 
+                            fontSize: '1.875rem', 
+                            fontWeight: '600', 
+                            color: '#3b82f6',
+                            marginBottom: '0.5rem'
+                          }}>
                             {analyticsData.performanceTrends.length}
-                          </Text>
+                          </div>
                           <Text variant="bodySm" as="p" tone="subdued">
                             Days Tracked
                           </Text>
