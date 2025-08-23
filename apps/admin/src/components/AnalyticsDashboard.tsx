@@ -777,9 +777,14 @@ const AnalyticsDashboard: React.FC = () => {
                           </div>
                           <Text variant="headingSm" as="h5">Total Submissions</Text>
                         </div>
-                        <Text variant="headingLg" as="h2" style={{ color: '#10b981' }}>
+                        <div style={{ 
+                          fontSize: '2rem', 
+                          fontWeight: '600', 
+                          color: '#10b981',
+                          marginBottom: '0.5rem'
+                        }}>
                           {formatNumber(analyticsData.totalSubmissions)}
-                        </Text>
+                        </div>
                         <Text variant="bodySm" as="p" tone="subdued">
                           Quiz attempts this period
                         </Text>
@@ -805,9 +810,14 @@ const AnalyticsDashboard: React.FC = () => {
                           </div>
                           <Text variant="headingSm" as="h5">Completion Rate</Text>
                         </div>
-                        <Text variant="headingLg" as="h2" style={{ color: '#f59e0b' }}>
+                        <div style={{ 
+                          fontSize: '2rem', 
+                          fontWeight: '600', 
+                          color: '#f59e0b',
+                          marginBottom: '0.5rem'
+                        }}>
                           {formatPercentage(analyticsData.averageCompletionRate)}
-                        </Text>
+                        </div>
                         <Text variant="bodySm" as="p" tone="subdued">
                           Average quiz completion rate
                         </Text>
@@ -833,9 +843,14 @@ const AnalyticsDashboard: React.FC = () => {
                           </div>
                           <Text variant="headingSm" as="h5">Avg. Time</Text>
                         </div>
-                        <Text variant="headingLg" as="h2" style={{ color: '#8b5cf6' }}>
+                        <div style={{ 
+                          fontSize: '2rem', 
+                          fontWeight: '600', 
+                          color: '#8b5cf6',
+                          marginBottom: '0.5rem'
+                        }}>
                           {formatTime(analyticsData.averageTimeToComplete)}
-                        </Text>
+                        </div>
                         <Text variant="bodySm" as="p" tone="subdued">
                           Time to complete quizzes
                         </Text>
