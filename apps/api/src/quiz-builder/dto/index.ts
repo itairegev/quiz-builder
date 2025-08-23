@@ -6,3 +6,4 @@ export * from './question-reorder.dto';
 export * from './template-query.dto';
 export * from './quiz-builder-stats.dto';
 export * from './quiz-duplicate.dto';
+export * from './quiz-preview.dto';

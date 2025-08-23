@@ -1,6 +1,7 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Res } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AppService } from './app.service';
+import { Response } from 'express';
 
 @ApiTags('app')
 @Controller()
@@ -12,6 +13,24 @@ export class AppController {
   @ApiResponse({ status: 200, description: 'Application is running' })
   getHello(): string {
     return this.appService.getHello();
+  }
+
+  @Get('test')
+  @ApiOperation({ summary: 'Test endpoint for Swagger' })
+  @ApiResponse({ status: 200, description: 'Test successful' })
+  getTest(): { message: string; timestamp: string } {
+    return {
+      message: 'Test endpoint working!',
+      timestamp: new Date().toISOString(),
+    };
+  }
+
+  @Get('api-json')
+  @ApiOperation({ summary: 'Get OpenAPI specification' })
+  @ApiResponse({ status: 200, description: 'OpenAPI spec retrieved' })
+  getApiSpec(@Res() res: Response) {
+    // This will be handled by SwaggerModule
+    res.redirect('/api/docs-json');
   }
 
   @Get('health')

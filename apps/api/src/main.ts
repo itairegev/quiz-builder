@@ -41,10 +41,25 @@ async function bootstrap() {
       .addTag('submissions', 'Quiz submission endpoints')
       .addTag('analytics', 'Analytics and reporting endpoints')
       .addTag('shopify', 'Shopify integration endpoints')
+      .addTag('quiz-preview', 'Quiz preview and testing endpoints')
       .build();
 
     const document = SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup('api/docs', app, document);
+    SwaggerModule.setup('api/docs', app, document, {
+      swaggerOptions: {
+        persistAuthorization: true,
+        docExpansion: 'list',
+      },
+      customSiteTitle: 'Shopify Quiz Builder API Docs',
+      customCss: '.swagger-ui .topbar { display: none }',
+      customJs: [
+        'https://unpkg.com/swagger-ui-dist@4.15.5/swagger-ui-bundle.js',
+        'https://unpkg.com/swagger-ui-dist@4.15.5/swagger-ui-standalone-preset.js'
+      ],
+      customCssUrl: [
+        'https://unpkg.com/swagger-ui-dist@4.15.5/swagger-ui.css'
+      ],
+    });
   }
 
   // Security headers

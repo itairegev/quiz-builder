@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { AppProvider } from '@shopify/polaris';
 
 export function Providers({ children }: { children: React.ReactNode }) {

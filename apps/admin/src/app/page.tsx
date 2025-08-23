@@ -1,71 +1,42 @@
 'use client';
 
-import { Page, Layout, Card, Text, Button, Badge, Box } from '@shopify/polaris';
-import { useState, useEffect } from 'react';
+import { Page, Layout, Card, Text, Badge } from '@shopify/polaris';
+import QuizPreview from '../components/QuizPreview';
 
 export default function DashboardPage() {
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    // Simulate loading
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (isLoading) {
-    return (
-      <Page title="Dashboard">
-        <Layout>
-          <Layout.Section>
-            <Card>
-              <div style={{ padding: '2rem', textAlign: 'center' }}>
-                <Text variant="headingLg" as="h2">
-                  Loading...
-                </Text>
-              </div>
-            </Card>
-          </Layout.Section>
-        </Layout>
-      </Page>
-    );
-  }
-
   return (
     <Page
       title="Dashboard"
       subtitle="Welcome to your Shopify Quiz Builder dashboard"
       primaryAction={{
         content: 'Create New Quiz',
-        onAction: () => console.log('Create quiz clicked'),
+        onAction: () => {},
       }}
     >
       <Layout>
         <Layout.Section>
           <Card>
             <div style={{ padding: '1.5rem' }}>
-              <Box padding="4">
+              <div style={{ padding: '1rem' }}>
                 <div>
                   <Text variant="headingMd" as="h3">
                     Quick Stats
                   </Text>
                   <div style={{ marginTop: '1rem' }}>
-                    <Box display="flex" justifyContent="space-between">
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                       <div style={{ textAlign: 'center' }}>
                         <Text variant="headingLg" as="p">
                           0
                         </Text>
-                        <Text variant="bodySm" as="p" color="subdued">
+                        <Text variant="bodySm" as="p" tone="subdued">
                           Active Quizzes
                         </Text>
                       </div>
                       <div style={{ textAlign: 'center' }}>
-                        <Text variant="headingLg" as="p">
+                        <Text variant="headingMd" as="p">
                           0
                         </Text>
-                        <Text variant="bodySm" as="p" color="subdued">
+                        <Text variant="bodySm" as="p" tone="subdued">
                           Total Submissions
                         </Text>
                       </div>
@@ -73,14 +44,14 @@ export default function DashboardPage() {
                         <Text variant="headingLg" as="p">
                           0%
                         </Text>
-                        <Text variant="bodySm" as="p" color="subdued">
+                        <Text variant="bodySm" as="p" tone="subdued">
                           Conversion Rate
                         </Text>
                       </div>
-                    </Box>
+                    </div>
                   </div>
                 </div>
-              </Box>
+              </div>
             </div>
           </Card>
         </Layout.Section>
@@ -88,41 +59,41 @@ export default function DashboardPage() {
         <Layout.Section>
           <Card>
             <div style={{ padding: '1.5rem' }}>
-              <Box padding="4">
+              <div style={{ padding: '1rem' }}>
                 <div>
                   <Text variant="headingMd" as="h3">
                     Getting Started
                   </Text>
                   <div style={{ marginTop: '1rem' }}>
-                    <Box display="flex" flexDirection="column" gap="2">
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <Badge status="info">1</Badge>
-                        <Text variant="bodyMd">
+                        <Badge tone="info">1</Badge>
+                        <Text variant="bodyMd" as="p">
                           Create your first quiz using our guided builder
                         </Text>
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <Badge status="info">2</Badge>
-                        <Text variant="bodyMd">
+                        <Badge tone="info">2</Badge>
+                        <Text variant="bodyMd" as="p">
                           Customize the design to match your brand
                         </Text>
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <Badge status="info">3</Badge>
-                        <Text variant="bodyMd">
+                        <Badge tone="info">3</Badge>
+                        <Text variant="bodyMd" as="p">
                           Integrate with your Shopify store
                         </Text>
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <Badge status="info">4</Badge>
-                        <Text variant="bodyMd">
+                        <Badge tone="info">4</Badge>
+                        <Text variant="bodyMd" as="p">
                           Start collecting leads and driving sales
                         </Text>
                       </div>
-                    </Box>
+                    </div>
                   </div>
                 </div>
-              </Box>
+              </div>
             </div>
           </Card>
         </Layout.Section>
@@ -130,20 +101,24 @@ export default function DashboardPage() {
         <Layout.Section>
           <Card>
             <div style={{ padding: '1.5rem' }}>
-              <Box padding="4">
+              <div style={{ padding: '1rem' }}>
                 <div>
                   <Text variant="headingMd" as="h3">
                     Recent Activity
                   </Text>
                   <div style={{ marginTop: '1rem' }}>
-                    <Text variant="bodyMd" color="subdued">
+                    <Text variant="bodyMd" as="p" tone="subdued">
                       No recent activity. Create your first quiz to get started!
                     </Text>
                   </div>
                 </div>
-              </Box>
+              </div>
             </div>
           </Card>
+        </Layout.Section>
+
+        <Layout.Section>
+          <QuizPreview />
         </Layout.Section>
       </Layout>
     </Page>

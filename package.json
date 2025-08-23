@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "concurrently \"npm run dev:admin\" \"npm run dev:api\" \"npm run dev:storefront\"",
     "dev:admin": "cd apps/admin && npm run dev",
-    "dev:api": "cd apps/api && npm run start:dev",
+    "dev:api": "cd apps/api && npm run dev",
     "dev:storefront": "cd apps/storefront && npm run dev",
     "build": "npm run build:admin && npm run build:api && npm run build:storefront",
     "build:admin": "cd apps/admin && npm run build",
