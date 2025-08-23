@@ -2,6 +2,7 @@
 
 import { Page, Layout, Card, Text, Badge } from '@shopify/polaris';
 import QuizPreview from '../components/QuizPreview';
+import ThemeManager from '../components/ThemeManager';
 
 export default function DashboardPage() {
   return (
@@ -119,6 +120,10 @@ export default function DashboardPage() {
 
         <Layout.Section>
           <QuizPreview />
+        </Layout.Section>
+
+        <Layout.Section>
+          <ThemeManager />
         </Layout.Section>
       </Layout>
     </Page>
