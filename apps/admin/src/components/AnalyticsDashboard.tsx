@@ -41,7 +41,7 @@ interface AnalyticsData {
 const AnalyticsDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [timeRange, setTimeRange] = useState('7d');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Real analytics data state
   const [analyticsData, setAnalyticsData] = useState<AnalyticsData>({
@@ -62,7 +62,7 @@ const AnalyticsDashboard: React.FC = () => {
         tablet: 0
       }
     },
-    isLoading: true
+    isLoading: false
   });
 
   const tabs = [
@@ -139,6 +139,8 @@ const AnalyticsDashboard: React.FC = () => {
 
   // Load mock data as fallback
   const loadMockData = async () => {
+    console.log('Loading mock data for time range:', timeRange);
+    
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 500));
     
@@ -294,6 +296,8 @@ const AnalyticsDashboard: React.FC = () => {
 
   // Load data when component mounts or time range changes
   useEffect(() => {
+    console.log('AnalyticsDashboard useEffect triggered, timeRange:', timeRange);
+    console.log('Current analyticsData state:', analyticsData);
     loadAnalyticsData();
   }, [timeRange]);
 
