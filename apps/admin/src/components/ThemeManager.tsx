@@ -11,6 +11,12 @@ import {
 
 export default function ThemeManager() {
   const [activeTab, setActiveTab] = useState(0);
+  
+  // Color scheme state
+  const [primaryColor, setPrimaryColor] = useState('#3b82f6');
+  const [secondaryColor, setSecondaryColor] = useState('#64748b');
+  const [backgroundColor, setBackgroundColor] = useState('#ffffff');
+  const [textColor, setTextColor] = useState('#374151');
 
   const tabs = [
     { id: 'colors', content: 'Colors' },
@@ -18,6 +24,39 @@ export default function ThemeManager() {
     { id: 'layout', content: 'Layout' },
     { id: 'preview', content: 'Preview' },
   ];
+
+  // Color validation helper
+  const isValidHexColor = (color: string) => {
+    return /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(color);
+  };
+
+  // Get input border color based on validation
+  const getInputBorderColor = (color: string) => {
+    if (color === '') return '#c9cccf'; // Default border
+    if (isValidHexColor(color)) return '#10b981'; // Green for valid
+    return '#ef4444'; // Red for invalid
+  };
+
+  // Color update handlers - simplified
+  const updatePrimaryColor = (color: string) => {
+    console.log('Updating primary color to:', color);
+    setPrimaryColor(color);
+  };
+
+  const updateSecondaryColor = (color: string) => {
+    console.log('Updating secondary color to:', color);
+    setSecondaryColor(color);
+  };
+
+  const updateBackgroundColor = (color: string) => {
+    console.log('Updating background color to:', color);
+    setBackgroundColor(color);
+  };
+
+  const updateTextColor = (color: string) => {
+    console.log('Updating text color to:', color);
+    setTextColor(color);
+  };
 
   return (
     <Card>
@@ -42,6 +81,11 @@ export default function ThemeManager() {
           </div>
         </div>
 
+        {/* Debug Info */}
+        <div style={{ marginBottom: '1rem', padding: '0.5rem', backgroundColor: '#f3f4f6', borderRadius: '4px', fontSize: '12px' }}>
+          <strong>Debug - Current Colors:</strong> Primary: {primaryColor} | Secondary: {secondaryColor} | Background: {backgroundColor} | Text: {textColor}
+        </div>
+
         {/* Tabs */}
         <Tabs tabs={tabs} selected={activeTab} onSelect={setActiveTab}>
           {/* Colors Tab */}
@@ -64,7 +108,8 @@ export default function ThemeManager() {
                     <div style={{ marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
                       <input
                         type="color"
-                        defaultValue="#3b82f6"
+                        value={primaryColor}
+                        onChange={(e) => updatePrimaryColor(e.target.value)}
                         style={{
                           width: '50px',
                           height: '40px',
@@ -75,11 +120,12 @@ export default function ThemeManager() {
                       />
                       <input
                         type="text"
-                        defaultValue="#3b82f6"
+                        value={primaryColor}
+                        onChange={(e) => updatePrimaryColor(e.target.value)}
                         placeholder="#3b82f6"
                         style={{
                           padding: '0.5rem',
-                          border: '1px solid #c9cccf',
+                          border: `1px solid ${getInputBorderColor(primaryColor)}`,
                           borderRadius: '4px',
                           fontSize: '14px',
                           width: '120px'
@@ -94,7 +140,8 @@ export default function ThemeManager() {
                     <div style={{ marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
                       <input
                         type="color"
-                        defaultValue="#64748b"
+                        value={secondaryColor}
+                        onChange={(e) => updateSecondaryColor(e.target.value)}
                         style={{
                           width: '50px',
                           height: '40px',
@@ -105,11 +152,12 @@ export default function ThemeManager() {
                       />
                       <input
                         type="text"
-                        defaultValue="#64748b"
+                        value={secondaryColor}
+                        onChange={(e) => updateSecondaryColor(e.target.value)}
                         placeholder="#64748b"
                         style={{
                           padding: '0.5rem',
-                          border: '1px solid #c9cccf',
+                          border: `1px solid ${getInputBorderColor(secondaryColor)}`,
                           borderRadius: '4px',
                           fontSize: '14px',
                           width: '120px'
@@ -124,7 +172,8 @@ export default function ThemeManager() {
                     <div style={{ marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
                       <input
                         type="color"
-                        defaultValue="#ffffff"
+                        value={backgroundColor}
+                        onChange={(e) => updateBackgroundColor(e.target.value)}
                         style={{
                           width: '50px',
                           height: '40px',
@@ -135,11 +184,12 @@ export default function ThemeManager() {
                       />
                       <input
                         type="text"
-                        defaultValue="#ffffff"
+                        value={backgroundColor}
+                        onChange={(e) => updateBackgroundColor(e.target.value)}
                         placeholder="#ffffff"
                         style={{
                           padding: '0.5rem',
-                          border: '1px solid #c9cccf',
+                          border: `1px solid ${getInputBorderColor(backgroundColor)}`,
                           borderRadius: '4px',
                           fontSize: '14px',
                           width: '120px'
@@ -154,7 +204,8 @@ export default function ThemeManager() {
                     <div style={{ marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
                       <input
                         type="color"
-                        defaultValue="#374151"
+                        value={textColor}
+                        onChange={(e) => updateTextColor(e.target.value)}
                         style={{
                           width: '50px',
                           height: '40px',
@@ -165,11 +216,12 @@ export default function ThemeManager() {
                       />
                       <input
                         type="text"
-                        defaultValue="#374151"
+                        value={textColor}
+                        onChange={(e) => updateTextColor(e.target.value)}
                         placeholder="#374151"
                         style={{
                           padding: '0.5rem',
-                          border: '1px solid #c9cccf',
+                          border: `1px solid ${getInputBorderColor(textColor)}`,
                           borderRadius: '4px',
                           fontSize: '14px',
                           width: '120px'
@@ -372,14 +424,14 @@ export default function ThemeManager() {
                   border: '1px solid #e5e7eb', 
                   borderRadius: '12px',
                   padding: '2rem',
-                  backgroundColor: '#ffffff',
+                  backgroundColor: backgroundColor,
                   maxWidth: '500px'
                 }}>
                   <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-                    <Text variant="headingLg" as="h3" style={{ color: '#3b82f6', marginBottom: '0.5rem' }}>
+                    <Text variant="headingLg" as="h3" style={{ color: primaryColor, marginBottom: '0.5rem' }}>
                       Sample Quiz Question
                     </Text>
-                    <Text variant="bodyMd" as="p" style={{ color: '#64748b' }}>
+                    <Text variant="bodyMd" as="p" style={{ color: secondaryColor }}>
                       This is how your quiz will look with the current theme settings.
                     </Text>
                   </div>
@@ -391,10 +443,10 @@ export default function ThemeManager() {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                       <button style={{
                         padding: '0.75rem 1rem',
-                        border: '1px solid #3b82f6',
+                        border: `1px solid ${primaryColor}`,
                         borderRadius: '8px',
-                        backgroundColor: '#ffffff',
-                        color: '#3b82f6',
+                        backgroundColor: backgroundColor,
+                        color: primaryColor,
                         cursor: 'pointer',
                         fontSize: '16px',
                         fontFamily: 'Inter'
@@ -405,8 +457,8 @@ export default function ThemeManager() {
                         padding: '0.75rem 1rem',
                         border: '1px solid #e5e7eb',
                         borderRadius: '8px',
-                        backgroundColor: '#ffffff',
-                        color: '#374151',
+                        backgroundColor: backgroundColor,
+                        color: textColor,
                         cursor: 'pointer',
                         fontSize: '16px',
                         fontFamily: 'Inter'
@@ -417,8 +469,8 @@ export default function ThemeManager() {
                         padding: '0.75rem 1rem',
                         border: '1px solid #e5e7eb',
                         borderRadius: '8px',
-                        backgroundColor: '#ffffff',
-                        color: '#374151',
+                        backgroundColor: backgroundColor,
+                        color: textColor,
                         cursor: 'pointer',
                         fontSize: '16px',
                         fontFamily: 'Inter'
@@ -433,8 +485,8 @@ export default function ThemeManager() {
                       padding: '0.75rem 1.5rem',
                       border: 'none',
                       borderRadius: '8px',
-                      backgroundColor: '#3b82f6',
-                      color: '#ffffff',
+                      backgroundColor: primaryColor,
+                      color: backgroundColor,
                       cursor: 'pointer',
                       fontSize: '16px',
                       fontFamily: 'Inter'

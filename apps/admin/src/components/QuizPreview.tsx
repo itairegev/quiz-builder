@@ -12,6 +12,7 @@ import {
 export default function QuizPreview() {
   const [selectedQuizId, setSelectedQuizId] = useState('test-quiz');
   const [activeTab, setActiveTab] = useState(0);
+  const [currentTime, setCurrentTime] = useState('');
 
   const tabs = [
     { id: 'preview', content: 'Preview' },
@@ -23,6 +24,11 @@ export default function QuizPreview() {
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
   };
+
+  // Fix hydration issue by setting time on client side only
+  useEffect(() => {
+    setCurrentTime(new Date().toLocaleString());
+  }, []);
 
   return (
     <Card>
@@ -71,9 +77,11 @@ export default function QuizPreview() {
                 <Text variant="bodyMd" as="p">
                   Preview system is working! This is a test quiz preview.
                 </Text>
-                <Text variant="bodySm" as="p" tone="subdued">
-                  Last updated: {new Date().toISOString()}
-                </Text>
+                {currentTime && (
+                  <Text variant="bodySm" as="p" tone="subdued">
+                    Last updated: {currentTime}
+                  </Text>
+                )}
               </div>
             </div>
           )}
