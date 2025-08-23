@@ -1,12 +1,13 @@
 # Shopify Quiz Builder
 
-A comprehensive quiz building platform integrated with Shopify, featuring advanced error handling, logging, monitoring, and GraphQL API integration.
+A comprehensive quiz building platform integrated with Shopify, featuring advanced error handling, logging, monitoring, GraphQL API integration, and an interactive admin dashboard.
 
 ## 🚀 Features
 
 ### Core Functionality
 - **Quiz Management**: Create, manage, and deploy interactive quizzes
 - **Quiz Builder Interface**: Drag-and-drop quiz creation with templates and validation
+- **QuizPreview Dashboard**: Interactive admin interface for quiz preview, validation, and embed codes
 - **Shopify Integration**: Seamless integration with Shopify stores
 - **Real-time Analytics**: Track quiz performance and user engagement
 - **Customizable Templates**: Pre-built quiz templates for various use cases
@@ -19,6 +20,7 @@ A comprehensive quiz building platform integrated with Shopify, featuring advanc
 - **Shopify GraphQL Client**: Robust GraphQL client with rate limiting, retry logic, and error handling
 - **Shopify Webhooks**: HMAC-validated webhook handling with event logging and processing
 - **Quiz Builder API**: Comprehensive builder endpoints with template system and validation
+- **QuizPreview API**: Complete preview, validation, and embed code generation system
 - **Performance Metrics**: Request/response timing and business metrics collection
 - **Security**: Shopify authentication guards and webhook signature validation
 
@@ -31,7 +33,14 @@ A comprehensive quiz building platform integrated with Shopify, featuring advanc
 - **API**: RESTful API with GraphQL client for Shopify operations
 - **Testing**: Jest with comprehensive test coverage
 
-### Frontend (React)
+### Frontend (Next.js Admin)
+- **Framework**: Next.js 14 with TypeScript
+- **UI Components**: Shopify Polaris design system
+- **State Management**: React hooks for local state
+- **Styling**: Polaris components with custom CSS for layouts
+- **Dashboard**: Interactive QuizPreview component with tabs and real-time data
+
+### Frontend (React Storefront)
 - **Framework**: React with TypeScript
 - **Styling**: Tailwind CSS with shadcn/ui components
 - **State Management**: React Query for server state
@@ -43,7 +52,7 @@ A comprehensive quiz building platform integrated with Shopify, featuring advanc
 - Node.js 18+ 
 - PostgreSQL 13+
 - Shopify Partner account
-- pnpm package manager
+- npm or yarn package manager
 
 ### Setup
 ```bash
@@ -52,19 +61,19 @@ git clone <repository-url>
 cd peronalizer
 
 # Install dependencies
-pnpm install
+npm install
 
 # Set up environment variables
 cp .env.example .env
 # Edit .env with your configuration
 
 # Set up database
-pnpm db:generate
-pnpm db:migrate
-pnpm db:seed
+cd packages/database
+npm run db:generate
+npm run db:push
 
 # Start development servers
-pnpm dev
+npm run dev
 ```
 
 ## 🔧 Configuration
@@ -82,7 +91,7 @@ SHOPIFY_WEBHOOK_SECRET="your_webhook_secret"
 
 # App
 NODE_ENV="development"
-PORT=3001
+PORT=4000
 FRONTEND_URL="http://localhost:3000"
 ```
 
@@ -96,154 +105,34 @@ FRONTEND_URL="http://localhost:3000"
 ### Current System Status
 - **API Server**: ✅ Running on http://localhost:4000
 - **Admin Interface**: ✅ Fully functional on http://localhost:3000 with Shopify Polaris
+- **QuizPreview Dashboard**: ✅ Interactive component with tabs, validation, and embed codes
 - **Storefront**: ✅ Running on http://localhost:5173
 - **All Interfaces**: ✅ Working correctly with React compatibility issues resolved
 
-### Run All Tests
-```bash
-pnpm test
-```
+## 🎯 QuizPreview Dashboard
 
-### Run Specific Test Suites
-```bash
-# Shopify tests
-pnpm test -- --testPathPattern=shopify
+The QuizPreview dashboard provides a comprehensive interface for managing quiz previews, validation, and embed codes.
 
-# Quiz builder tests
-pnpm test -- --testPathPattern=quiz-builder
+### Features
+- **Interactive Tabs**: Preview, Validation, Embed Codes, and Summary
+- **Quiz Selection**: Input field for quiz ID with load functionality
+- **Real-time Data**: Dynamic content based on selected quiz
+- **Copy to Clipboard**: Functionality for embed codes and URLs
+- **Responsive Design**: Works across different screen sizes
+- **Professional UI**: Clean, modern interface following Shopify design patterns
 
-# Error handling tests
-pnpm test -- --testPathPattern=exceptions
+### Dashboard Sections
+- **Preview Tab**: Quiz information, ID, message, and timestamp
+- **Validation Tab**: Configuration status, warnings, and improvement suggestions
+- **Embed Codes Tab**: Iframe, JavaScript, and CSS embed codes with copy functionality
+- **Summary Tab**: Quiz statistics, metrics, and preview URL
 
-# Health check tests
-pnpm test -- --testPathPattern=health
-```
+### Technical Implementation
+- Built with React hooks (useState, useEffect)
+- Integrated with Shopify Polaris component library
+- Proper TypeScript interfaces for all data structures
+- Responsive CSS Grid and Flexbox layouts
+- Error handling and loading states
+- Console logging for development debugging
 
-### Test Coverage
-- **Total Tests**: 199
-- **Passing**: 173 (87%)
-- **Coverage**: Comprehensive coverage of core functionality
-
-## 📚 API Documentation
-
-### Shopify Integration
-The platform provides a robust Shopify GraphQL client with:
-
-- **Rate Limiting**: Respects Shopify API limits (Admin: 2 calls/sec, Storefront: 2 calls/sec)
-- **Retry Logic**: Exponential backoff with circuit breaker pattern
-- **Error Handling**: Comprehensive error types and status codes
-- **Operations**: Products, collections, customers, shop management
-
-#### Example Usage
-```typescript
-// Get shop products
-const products = await shopifyOperations.getProducts(config, {
-  first: 10,
-  query: 'shoes',
-  productType: 'footwear'
-});
-
-// Create/update customer
-const customer = await shopifyOperations.upsertCustomer(config, {
-  email: 'customer@example.com',
-  firstName: 'John',
-  lastName: 'Doe',
-  tags: ['quiz-user']
-});
-```
-
-### Error Handling
-The platform implements a comprehensive error handling system:
-
-- **Custom Exceptions**: Domain-specific error types for different scenarios
-- **Global Exception Filter**: Centralized error processing and logging
-- **Structured Responses**: Consistent error response format
-- **Request Tracing**: Unique request IDs for debugging
-
-#### Error Response Format
-```json
-{
-  "statusCode": 400,
-  "message": "Validation failed",
-  "error": "VALIDATION_ERROR",
-  "timestamp": "2024-01-15T10:30:00Z",
-  "path": "/api/v1/quizzes",
-  "requestId": "req_123456789",
-  "details": {
-    "field": "title",
-    "issue": "Title is required"
-  }
-}
-```
-
-## 🔍 Monitoring & Health
-
-### Health Checks
-- **Database**: Connection and query performance
-- **Memory**: Heap usage and garbage collection
-- **External Services**: Shopify API connectivity
-- **System Resources**: CPU, disk, and network status
-
-### Metrics Collection
-- **API Performance**: Request rates, response times, error rates
-- **Business Metrics**: Quiz completions, conversions, user engagement
-- **System Metrics**: Memory usage, database performance
-- **Security**: Authentication attempts, rate limiting events
-
-## 🚀 Deployment
-
-### Production Build
-```bash
-# Build the application
-pnpm build
-
-# Start production server
-pnpm start:prod
-```
-
-### Docker Deployment
-```bash
-# Build Docker image
-docker build -t shopify-quiz-builder .
-
-# Run container
-docker run -p 3001:3001 shopify-quiz-builder
-```
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🆘 Support
-
-For support and questions:
-- Create an issue in the repository
-- Check the documentation
-- Review the test examples
-
-## 🗺️ Roadmap
-
-### Completed ✅
-- [x] Task 21: Set up error handling and logging
-- [x] Task 22: Implement Shopify GraphQL client
-- [x] Core error handling infrastructure
-- [x] Shopify API integration
-- [x] Comprehensive testing suite
-
-### In Progress 🚧
-- [ ] Task 23: Implement Shopify webhooks
-- [ ] Task 24: Create quiz builder interface
-
-### Planned 📋
-- [ ] Advanced analytics dashboard
-- [ ] A/B testing for quizzes
-- [ ] Multi-language support
-- [ ] Advanced reporting features
+---
